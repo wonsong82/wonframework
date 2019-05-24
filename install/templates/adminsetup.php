@@ -60,23 +60,38 @@ $site_url = $protocol . $_SERVER['HTTP_HOST'] . $sub;
 
 <table class="admintable"> 
 	<thead>
-    	<td colspan="2">Please provide full name &amp; desired admin password</td>
+    	<td colspan="2">Please provide desired Administrator info.</td>
     </thead>
     <tr>    	
     	<td width="80">
-        	<label for="adminname">Admin Name</label>
+        	<label for="username">Username</label>
         </td>
         <td>
-        	<input name="adminname" id="adminname" type="text" value="<?=isset($_POST['admin_name'])?$_POST['admin_name']:''?>" />            
+        	<input name="username" id="username" type="text" value="<?=isset($_POST['username'])?$_POST['username']:''?>" />            
         </td>
     </tr>
     
     <tr>
     	<td><label for="password">Password</label></td>
-        <td><input name="password" id="password" type="text" value="<?=isset($_POST['admin_pass'])?$_POST['admin_pass']:''?>" /></td>
+        <td><input name="password" id="password" type="password" value="" /></td>
     </tr>
-            
     
+    <tr>
+    	<td><label for="password2">Repeat Pwd</label></td>
+        <td><input name="password2" id="password2" type="password" value="" /></td>
+    </tr>   
+    
+    <tr><td>&nbsp;</td></tr>
+    
+     <tr>
+    	<td><label for="name">Full Name</label></td>
+        <td><input name="name" id="name" type="text" value="<?=isset($_POST['name'])?$_POST['name']:''?>" /></td>
+    </tr>   
+    
+    <tr>
+    	<td><label for="email">Email</label></td>
+        <td><input name="email" id="email" type="text" value="<?=isset($_POST['email'])?$_POST['email']:''?>" /></td>
+    </tr> 
        
     <tr>
     	<td colspan="2" align="right">
@@ -99,8 +114,11 @@ function check_admin() {
 		type : 'post',
 		data : {
 			host : $('#siteurl').val(),
-			adminname : $('#adminname').val(),
-			password : $('#password').val()				
+			username : $('#username').val(),
+			password : $('#password').val(),
+			password2 : $('#password2').val(),
+			name : $('#name').val(),
+			email : $('#email').val()				
 		},
 		success : function(data) {
 			loading.off();
@@ -111,8 +129,10 @@ function check_admin() {
 				// write to config object
 				config.site_url = $('#siteurl').val();
 				config.time_zone = $('#timezone').val();
-				config.admin_name = $('#adminname').val();
-				config.admin_pass = $('#password').val();				
+				config.admin_username = $('#username').val();
+				config.admin_password = $('#password').val();	
+				config.admin_name = $('#name').val();
+				config.admin_email = $('#email').val();			
 				
 				// change hash and move on to next
 				changeHash({

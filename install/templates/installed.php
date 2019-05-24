@@ -24,9 +24,9 @@ require '../config.php';
 		<table>
 			<tr>    	
     			<td>
-            		<p>Welcome back, <?=ADMIN_NAME?>.</p>            
+            		<p>Welcome back.</p>            
             		<p>Your site is already installed. If you would like to reinstall, please delete your configuration file and run the install again.</p>
-            		<p><a href="<?=SITE_URL?>">Go to site</a> or <a href="<?=ADMIN_URL?>">Go to admin page</a></p>
+            		<p><a href="<?=Won::get('Config')->site_url?>">Go to site</a> or <a href="<?=Won::get('Config')->admin_url?>">Go to admin page</a></p>
 				</td>
 			</tr>
 		</table>

@@ -1,5 +1,5 @@
 <?php
-class Contact
+class Contact extends WonClass
 {
 	/**
 	 * @name $name
@@ -119,15 +119,6 @@ class Contact
 	 */
 	public $website;
 	
-	
-	/**
-	 * @name $error
-	 * @desc Error if any
-	 * @type string
-	 */
-	public $error;
-	
-	
 	/**
 	 * @name $table
 	 * @desc Contact's Table
@@ -135,144 +126,64 @@ class Contact
 	 */
 	private $table;
 	
-	public function __construct()
-	{
-		if (!defined('CONFIG_LOADED'))
-			require_once '../../config.php';
-		
-		$this->table = Sql::prefix() . 'contact';			
-		$this->initialize();		
-	}
 	
-	private function initialize()
-	{
-		$sql = Sql::sql();
+	
+	/**
+	 * @name initialize()
+	 * @desc Initialize tables and insert the pre-values
+	 * @param none	 
+	 * @return void
+	 */
+	protected function init()
+	{		
+		$this->table = Won::get('DB')->prefix . 'contact';		
 		
-		$sql->query("
+		Won::get('DB')->sql->query("
 			
 			CREATE TABLE IF NOT EXISTS `{$this->table}` (
 				`id` SERIAL NOT NULL,
 				`name` VARCHAR(255) NOT NULL DEFAULT '',
-				`phone_a` VARCHAR(3) NOT NULL DEFAULT '',
-				`phone_f` VARCHAR(3) NOT NULL DEFAULT '',
-				`phone_l` VARCHAR(4) NOT NULL DEFAULT '',
-				`fax_a` VARCHAR(3) NOT NULL DEFAULT '',
-				`fax_f` VARCHAR(3) NOT NULL DEFAULT '',
-				`fax_l` VARCHAR(4) NOT NULL DEFAULT '',
-				`street` VARCHAR(255) NOT NULL DEFAULT '',
-				`apt` VARCHAR(255) NOT NULL DEFAULT '',
-				`city` VARCHAR(255) NOT NULL DEFAULT '',
-				`state` VARCHAR(2) NOT NULL DEFAULT '',
-				`country` VARCHAR(255) NOT NULL DEFAULT '',
-				`zip` VARCHAR(10) NOT NULL DEFAULT '',
+				`phone` VARCHAR(255) NOT NULL DEFAULT '',
+				`fax` VARCHAR(255) NOT NULL DEFAULT '',
+				`address` VARCHAR(255) NOT NULL DEFAULT '',
 				`email` VARCHAR(255) NOT NULL DEFAULT '',
 				`website` VARCHAR(255) NOT NULL DEFAULT '',
 				PRIMARY KEY(`id`)							
 			) ENGINE = INNODB CHARSET `utf8` COLLATE `utf8_general_ci`	
 		
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 		
 		// initialize the table
-		$table = $sql->query("SELECT count(`id`) as `length` FROM `{$this->table}` ") or die($sql->error);
+		$table = Won::get('DB')->sql->query("SELECT count(`id`) as `length` FROM `{$this->table}` ") or die(Won::get('DB')->sql->error);
 		$table = $table->fetch_assoc();
 						
 		if ($table['length'] == 0)
 		{	
-			$sql->query("
+			Won::get('DB')->sql->query("
 			
 				INSERT INTO `{$this->table}`
 				SET		`name` = 'My Name',
-						`phone_a` = '000',
-						`phone_f` = '000',
-						`phone_l` = '0000',
-						`fax_a` = '000',
-						`fax_f` = '000',
-						`fax_l` = '0000',
-						`street` = '1 Main Street',
-						`apt` = '',
-						`city` = 'New York',
-						`state` = 'NY',
-						`country` = 'USA',
-						`zip` = '10001',
+						`phone` = '000-000-0000',
+						`fax` = '000-000-0000',
+						`address` = 'My Address',
 						`email` = 'aaa@email.com',
 						`website` = 'http://www.website.com'					
 			
-			") or die($sql->error);
+			") or die(Won::get('DB')->sql->error);
 		}
 		
-		$this->refresh_list();
-	}
-	
-	public function update($key, $value)
-	{
-		$sql = Sql::sql();
-		
-		$key;
-		$value = $sql->real_escape_string(htmlspecialchars(trim($value)));
-		
-		if ($this->validate($key, $value))
-		{		
-			$sql->query("			
-				UPDATE `{$this->table}`
-				SET		`{$key}` = '{$value}'			
-			");
-			return true;
-		}
-		
-		else
-			return false;
+		//$this->refresh_list();
 	}
 		
-		
-	
-	public function update_all($name, $phone_areacode, $phone_first, $phone_last, $fax_areacode, $fax_first, $fax_last, $street, $apt, $city, $state, $country, $zip, $email, $website)
-	{
-		$sql = Sql::sql();
-		
-		$sql->query("
-		
-			UPDATE `{$this->table}`
-			SET		`name` = '{$name}',
-					`phone_a` = '{$phone_areacode}',
-					`phone_f` = '{$phone_first}',
-					`phone_l` = '{$phone_last}',
-					`fax_a` = '{$fax_areacode}',
-					`fax_f` = '{$fax_first}',
-					`fax_l` = '{$fax_last},
-					`street` = '{$street}',
-					`apt` = '{$apt}',
-					`city` = '{$city}',
-					`state` = '{$state}',
-					`country` = '{$country}',
-					`zip` = '{$zip}',
-					`email` = '{$email}',
-					`website` = '{$website}'					
-		
-		") or die($sql->error);
-		
-		$this->refresh_list();
-	}
-	
-	private function refresh_list()
-	{
-		$sql = Sql::sql();
-		
-		$contacts = $sql->query("
-			
-			SELECT `name`,`phone_a`,`phone_f`,`phone_l`,`fax_a`,`fax_f`,`fax_l`,`street`,`apt`,`city`,`state`,`country`,`zip`,`email`,`website` 
-			FROM `{$this->table}`	
-		
-		") or die ($sql->error);
-				
-		if ($contacts->num_rows) {
-			$contact = $contacts->fetch_assoc();	
-			foreach ($contact as $key=>$value)
-				$this->$key = $value;								
-		}
-		
-	}
 	
 	
+	/**
+	 * @name validate(string $key, string $value)	 
+	 * @desc Validate the input values (name, phone, fax, address, email, website) and returns true or false. 
+	 * @param string $key : Validate property.
+	 * @param string $value : Value of the property.
+	 * @return bool
+	 */
 	private function validate($key, $value)
 	{
 		$error = '';
@@ -362,9 +273,14 @@ class Contact
 		
 	}
 	
-	// public functions 
+// public functions ///////////////////////////////////////////////////////////////////////////// 
 	
-	// returns phone number in a format provided
+	/**
+	 * @name phone(string $format='area - first - last')	 
+	 * @desc Returns the phone number in a format provided.	 
+	 * @param string $format : Mix of 'area', 'first', 'last' default: 'area - first - last'.
+	 * @return string
+	 */
 	public function phone($format = 'area - first - last')
 	{		
 		$phone = str_replace('area', $this->phone_a, 
@@ -374,10 +290,14 @@ class Contact
 		return $phone;
 	}
 	
-	// returns fax number in a format provided
+	/**
+	 * @name fax(string $format='area - first - last')	 
+	 * @desc Returns fax number in a format provided. 
+	 * @param string $format : Mix of 'area', 'first', 'last' default: 'area - first - last'.
+	 * @return string
+	 */
 	public function fax($format = 'area - first - last')
 	{		
-		
 		$fax = str_replace('area', $this->fax_a,
 				str_replace('first', $this->fax_f,
 					str_replace('last', $this->fax_l, $format)));
@@ -385,7 +305,13 @@ class Contact
 		return $fax;	
 	}
 	
-	// returns address in a format provided
+	
+	/**
+	 * @name address(string $format='street apt <br/> city, street zip')	 
+	 * @desc Returns address in a format provided. 
+	 * @param string $format : Mix of street, apt, city, state, zip, country default: 'street apt &lt;br/&gt; city, street zip'.
+	 * @return string
+	 */
 	public function address($format = 'street apt <br/> city, street zip')
 	{
 		$address = str_replace('street',$this->street,
@@ -398,7 +324,13 @@ class Contact
 		return $address;					
 	}
 	
-	// return link for the google map
+	
+	/**
+	 * @name maplink(string $lan='en')	 
+	 * @desc Returns the google maps link.
+	 * @param string $lan : language code either 'en' or 'ko'
+	 * @return string
+	 */
 	public function maplink($lan='en')
 	{
 		switch ($lan)
@@ -420,6 +352,15 @@ class Contact
 		
 	}
 	
+	
+	/**
+	 * @name map(int $width, int $height, string $lan='en')	 
+	 * @desc Returns embedded iframe map html data. 
+	 * @param int $width : Width of the map size.
+	 * @param int $height : Height of the map size.
+	 * @param string $lan : Language of the map, 'en' and 'ko' are supported.
+	 * @return string
+	 */
 	public function map($width,$height,$lan='en')
 	{
 		switch ($lan)
@@ -441,6 +382,136 @@ class Contact
 	}
 	
 	
+	
+	/**
+	 * @name update(string $key, string $value)
+	 * @desc Update contact info from database. Returns true or false.
+	 * @param string $key : key of the item to be modified.
+	 * @param string $value : value of the key of the item to be modified. 
+	 * @return bool
+	 */	
+	public function update($id, $key, $value)
+	{		
+		$key;
+		$value = Won::get('DB')->sql->real_escape_string(htmlspecialchars(trim($value)));
+		
+		if ($this->validate($key, $value))
+		{		
+			Won::get('DB')->sql->query("			
+				UPDATE `{$this->table}`
+				SET		`{$key}` = '{$value}'
+				WHERE `id` = '{$id}'			
+			");
+			return true;
+		}
+		
+		else
+			return false;
+	}
+	
+	public function add() {
+		Won::get('DB')->query("
+			INSERT INTO `{$this->table}`
+			SET `name` = 'My Name',
+				`phone` = '000-000-0000',
+				`fax` = '000-000-0000',
+				`address` = 'My Address',
+				`email` = 'aaa@email.com',
+				`website` = 'http://www.website.com'				
+		");
+	}
+	
+	public function remove($id) {
+		Won::get('DB')->query("
+			DELETE FROM `{$this->table}`
+			WHERE `id` = '{$id}'
+		");
+	}
+	
+	public function getContacts() {
+		$list = Won::get('DB')->query("
+			SELECT * FROM `{$this->table}`
+		");
+		$data = array();
+		if ($list->num_rows) {
+			while ($address = $list->fetch_assoc()) {
+				$data[] = $address;
+			}
+		}
+		return $data;
+	}
+	
+		
+		
+	/**
+	 * @name update_all(string $name, string $phone_areacode, string $phone_first, string $phone_last, string $fax_areacode, string $fax_first, string $fax_last, string $street, string $apt, string $city, string $state, string $country, string $zip, string $email, string $website)
+	 * @desc Update contact info from database. Does not validate the values.
+	 * @param string $name : Name.
+	 * @param string $phone_areacode : phone_areacode
+	 * @param string $phone_first : phone_first
+	 * @param string $phone_last : phone_last
+	 * @param string $fax_areacode : fax_areacode
+	 * @param string $fax_first : fax_first
+	 * @param string $fax_last : fax_last
+	 * @param string $street : street
+	 * @param string $apt : apt
+	 * @param string $city : city
+	 * @param string $state : state
+	 * @param string $country : country
+	 * @param string $zip : zip
+	 * @param string $email : email
+	 * @param string $website : website
+	 * @return void
+	 */	
+	public function update_all($name, $phone_areacode, $phone_first, $phone_last, $fax_areacode, $fax_first, $fax_last, $street, $apt, $city, $state, $country, $zip, $email, $website)
+	{
+		Won::get('DB')->sql->query("
+		
+			UPDATE `{$this->table}`
+			SET		`name` = '{$name}',
+					`phone_a` = '{$phone_areacode}',
+					`phone_f` = '{$phone_first}',
+					`phone_l` = '{$phone_last}',
+					`fax_a` = '{$fax_areacode}',
+					`fax_f` = '{$fax_first}',
+					`fax_l` = '{$fax_last},
+					`street` = '{$street}',
+					`apt` = '{$apt}',
+					`city` = '{$city}',
+					`state` = '{$state}',
+					`country` = '{$country}',
+					`zip` = '{$zip}',
+					`email` = '{$email}',
+					`website` = '{$website}'					
+		
+		") or die(Won::get('DB')->sql->error);
+		
+		//$this->refresh_list();
+	}
+	
+	
+	/**
+	 * @name refresh_list()	 
+	 * @desc Update this class's properties, reading directly from the database.
+	 * @param none
+	 * @return void
+	 */
+	private function refresh_list()
+	{
+		$contacts = Won::get('DB')->sql->query("
+			
+			SELECT `name`,`phone_a`,`phone_f`,`phone_l`,`fax_a`,`fax_f`,`fax_l`,`street`,`apt`,`city`,`state`,`country`,`zip`,`email`,`website` 
+			FROM `{$this->table}`	
+		
+		") or die (Won::get('DB')->sql->error);
+				
+		if ($contacts->num_rows) {
+			$contact = $contacts->fetch_assoc();	
+			foreach ($contact as $key=>$value)
+				$this->$key = $value;								
+		}
+		
+	}
 	
 	
 }

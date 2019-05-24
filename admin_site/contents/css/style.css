@@ -1,0 +1,264 @@
+/* Global */
+* {
+	margin:0;
+	padding:0;
+	font-size:12px;
+	font-family:arial;
+	line-height:16px;
+	color:#888888;
+	list-style:none;
+	text-decoration:none;
+}
+
+
+
+/* Header */
+body {
+	min-width:500px;	
+}
+#header {
+	background:#E5E5E5;
+	border-bottom:1px solid #D3D3D3;
+	text-align:right;
+}
+#brand {
+	float:left;
+	display:inline;
+	margin:5px;
+	font-weight:bold;
+}
+#greet {
+	display:inline-block;
+	height:20px;
+	margin:5px;
+}
+
+/* Main Navigation */
+#nav ul {
+	text-align:center;
+}
+#nav ul li {
+	display:-moz-inline-stack;
+	display:inline-block;
+	padding:8px 0px;
+	margin:-2px;
+	*margin:0px 0px 0px -1px; /* IE 6, 7 hack */
+	*zoom: 1; /* IE 6, 7 hack for inline-block */
+	*display: inline; /* IE 6, 7 hack for inline-block */	
+}
+#nav ul li a {
+	font-size:12px;
+	padding:2px 5px;
+	border:1px solid #D3D3D3;
+}
+#nav li:first-child a {
+	padding-left:10px;	
+	-moz-border-radius-topleft:5px;
+	-webkit-border-top-left-radius:5px;
+	border-top-left-radius:5px;
+	-moz-border-radius-bottomleft:5px;
+	-webkit-border-bottom-left-radius:5px;
+	border-bottom-left-radius:5px;
+	
+}
+#nav li:last-child a {
+	padding-right:10px;
+	-moz-border-radius-topright:5px;
+	-webkit-border-top-right-radius:5px;
+	border-top-right-radius:5px;
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-right-radius:5px;
+	border-bottom-right-radius:5px;
+}
+
+
+
+/* Body */
+#wrapper {
+	min-width:500px;
+	max-width:950px;
+	margin:0px auto;
+	padding:20px;
+}
+
+
+#main .title {
+	font-weight:bold;
+	display:block;
+	padding:5px;
+	background:#F6F6F6;
+	border:1px solid #D3D3D3;
+	margin-bottom:15px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	_zoom:1; /* IE6 Hack for display */
+}
+
+#content {
+	position:relative;
+}
+
+/* Submenu Navigation */
+#content #subnav, .nav {
+	float:left;
+	width:150px;
+}
+#content #subnav a, .nav a{
+	display:inline-block;
+	padding:2px 5px;
+	border:1px solid #d3d3d3;
+	width:130px;
+	background:#f6f6f6;
+	margin-top:-1px;
+	
+}
+#content #subnav a:hover, .nav a:hover {
+	background:#EEEEEE;
+}
+#content #subnav li.selected a, .nav li.selected a{
+	background:#EEEEEE;
+	font-weight:bold;
+}
+#content #subnav li:first-child a, .nav li:first-child a {
+	padding-top:4px;
+	-moz-border-radius-topleft:5px;
+	-webkit-border-top-left-radius:5px;
+	-moz-border-radius-topright:5px;
+	-webkit-border-top-right-radius:5px;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+}
+#content #subnav li:last-child a, .nav li:last-child a{
+	padding-bottom:4px;
+	-moz-border-radius-bottomleft:5px;
+	-webkit-border-bottom-left-radius:5px;
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-right-radius:5px;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+}
+
+/* Sub-Page */
+#content #page {
+	overflow:hidden; /* to make the table remained width */
+	_zoom:1; /* for IE6 fix */	
+}
+
+
+/* msg */
+#msg {
+	clear:both;
+}
+
+
+/* GLOBALS */
+h1, h2, a, strong {
+	color:#0099FF;
+}
+h2 {
+	font-weight:normal;
+}
+a:hover {
+	background:#EEEEEE;
+}
+
+
+thead {
+	font-weight:bold;
+}
+td {
+	padding:2px;
+	padding-bottom:1px;	
+	padding-top:0px;
+}
+table {	
+	padding:5px;
+	background:#f6f6f6;
+	margin-bottom:10px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #d3d3d3;
+	width:100%;
+	_zoom:1;
+}
+
+
+input, textarea {	
+	border:1px solid #d3d3d3;	
+	width:100%;		
+}
+button, a.button {
+	color:#09F;
+	padding:0px 10px;	
+	cursor:pointer;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	background:#e5e5e5;
+	border:1px solid #d3d3d3;
+	font-weight:normal;	
+}
+button:hover, a.button:hover {
+	background:#eee;
+}
+
+
+input[type="button"], input[type="file"], input[type="submit"] {
+	color:#09F;
+	padding:0px 10px;	
+	margin-left: 5px;
+	cursor:pointer;
+	border-radius:5px;
+	background:#e5e5e5;
+	width:auto;
+}
+input[type="button"]:hover, input[type="file"]:hover, input[type="submit"]:hover {	
+	background:#eee;
+}
+#new-file {
+	width:auto;
+}
+
+/* Global Class */
+.error {
+	color:#FF0000;
+}
+.alert {
+	background:url(../imgs/alert-16x16.png) 0 0 no-repeat;
+	text-indent:16px;
+	color:#FF8800;
+}
+.loading {
+	width:16px;
+	height:11px;
+	background:url(../imgs/loading.gif) 0 0 no-repeat;
+}
+.clear {
+	clear:both;
+}
+button.disabled {
+	color:#aaa;
+	background:inherit;
+	cursor:default;
+}
+
+
+
+
+.sort li {
+	cursor:move;
+	margin:0 5px 5px 5px; 
+	padding: 5px;	
+}
+
+table table {		
+	padding:0;
+	margin:0;
+	background:inherit;
+	border:none;
+	_zoom:1;
+}
+
+

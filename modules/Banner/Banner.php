@@ -1,5 +1,6 @@
 <?php
-class Banner
+// ModuleNavigationSortOrder=5;
+class Banner extends WonClass
 {
 	/**
 	 * @name $table
@@ -8,38 +9,20 @@ class Banner
 	 */	
 	 private $table;
 	
-	public $error;
-	
-	
-	/**
-	 * @name Banner()
-	 * @desc Initialize Banner class.
-	 * @param none	 
-	 * @return void
-	 */
-	public function __construct()
-	{
-		if (!defined('CONFIG_LOADED'))
-			require_once '../../config.php';
-			
-		$this->table = Sql::prefix() . 'banner';
-		$this->init_table();	
-	}
-
-
-
-	
+		
 	/**
 	 * @name initialize_table()
 	 * @desc Initialize the table
 	 * @param none
 	 * @return void
 	 */
-	private function init_table() 
+	public function init() 
 	{
-		$sql = Sql::sql();
+		// set Prefix
+		$this->table = Won::get('DB')->prefix . 'banner';
 		
-		$sql->query("
+		// create table		
+		Won::get('DB')->sql->query("
 		
 			CREATE TABLE IF NOT EXISTS `{$this->table}` (
 				`id` SERIAL NOT NULL,
@@ -50,7 +33,7 @@ class Banner
 				PRIMARY KEY (`id`)				
 			) ENGINE = INNODB CHARSET `utf8` COLLATE `utf8_general_ci`
 			
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 	}
 	
 	
@@ -64,17 +47,15 @@ class Banner
 	 * @return array
 	 */
 	public function get_banners() 
-	{
-		$sql = Sql::sql();
-		
+	{		
 		$index = 1;
 		
-		$banners = $sql->query("
+		$banners = Won::get('DB')->sql->query("
 		
 			SELECT * FROM `{$this->table}`
 			ORDER BY `id`
 			
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 		
 		$data = array();				
 		if ($banners->num_rows!=0) 
@@ -83,7 +64,7 @@ class Banner
 			{
 				$banner['first'] = $index==1? true:false;
 				$banner['last'] = $index==$banners->num_rows? true:false;
-				$banner['imgpath'] = CONTENT_URL . $banner['imgpath'];				
+				$banner['imgpath'] = Won::get('Config')->content_url . $banner['imgpath'];				
 				
 				$data[] = $banner;
 				
@@ -108,11 +89,9 @@ class Banner
 	 */		
 	public function update($id, $key, $value)
 	{
-		$sql = Sql::sql();
+		$value = Won::get('DB')->sql->real_escape_string(trim($value));
 		
-		$value = $sql->real_escape_string(trim($value));
-		
-		$sql->query("
+		Won::get('DB')->sql->query("
 			
 			UPDATE `{$this->table}`
 			SET		`{$key}` = '{$value}'
@@ -136,14 +115,12 @@ class Banner
 	 */	
 	public function add($imgpath, $title, $desc, $link)
 	{
-		$sql = Sql::sql();		
+		$imgpath = Won::get('DB')->sql->real_escape_string(trim($imgpath));
+		$title = Won::get('DB')->sql->real_escape_string(trim($title));
+		$desc = Won::get('DB')->sql->real_escape_string(trim($desc));
+		$link = Won::get('DB')->sql->real_escape_string(trim($link));		
 		
-		$imgpath = $sql->real_escape_string(trim($imgpath));
-		$title = $sql->real_escape_string(trim($title));
-		$desc = $sql->real_escape_string(trim($desc));
-		$link = $sql->real_escape_string(trim($link));		
-		
-		$sql->query("
+		Won::get('DB')->sql->query("
 			
 			INSERT INTO `{$this->table}` 
 			SET `imgpath` = '$imgpath',
@@ -151,7 +128,7 @@ class Banner
 				`desc` = '$desc',
 				`link` = '$link'
 			
-		") or die($sql->error);		
+		") or die(Won::get('DB')->sql->error);		
 	
 	}
 	
@@ -164,14 +141,12 @@ class Banner
 	 */	
 	public function remove($id)
 	{
-		$sql = Sql::sql();
-		
-		$sql->query("
+		Won::get('DB')->sql->query("
 			
 			DELETE FROM `{$this->table}`
 			WHERE `id` = '{$id}'
 			
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 	}
 	
 	
@@ -184,47 +159,45 @@ class Banner
 	 */	
 	public function swap($id1, $id2)
 	{
-		$sql = Sql::sql();
-		
 		// get $temp_id from $last_id + 1
-		$last = $sql->query("
+		$last = Won::get('DB')->sql->query("
 		
 			SELECT `id` FROM `{$this->table}`
 			ORDER BY `id` DESC
 			LIMIT 1
 		
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 		
 		$last = $last->fetch_assoc();
 		$last_id = $last['id'];
 		$temp_id = $last_id + 1;
 		
 		// update $id1 to $temp_id
-		$sql->query("
+		Won::get('DB')->sql->query("
 		
 			UPDATE `{$this->table}`
 			SET `id` = '{$temp_id}'
 			WHERE `id` = '{$id1}'
 		
-		") or die($sql->error);	
+		") or die(Won::get('DB')->sql->error);	
 		
 		// update $id2 to $id1
-		$sql->query("
+		Won::get('DB')->sql->query("
 		
 			UPDATE `{$this->table}`
 			SET `id` = '{$id1}'
 			WHERE `id` = '{$id2}'
 		
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 		
 		// update $id1 back to $id2
-		$sql->query("
+		Won::get('DB')->sql->query("
 		
 			UPDATE `{$this->table}`
 			SET `id` = '{$id2}'
 			WHERE `id` = '{$temp_id}'
 		
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 	}
 	
 }

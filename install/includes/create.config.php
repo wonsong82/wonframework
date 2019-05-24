@@ -1,4 +1,5 @@
 <?php
+
 // get the posts and trim
 $db_host = trim($_POST['db_host']);
 $db_user = trim($_POST['db_user']);
@@ -11,8 +12,10 @@ $site_dir = str_replace('/install/includes/create.config.php', '', $_SERVER['SCR
 
 $time_zone = trim($_POST['time_zone']);
 
+$admin_username = strip_tags(trim($_POST['admin_username']));
+$admin_password = trim($_POST['admin_password']);
 $admin_name = strip_tags(trim($_POST['admin_name']));
-$admin_pass = md5(trim($_POST['admin_pass']));
+$admin_email = trim($_POST['admin_email']);
 
 
 // get config content
@@ -26,8 +29,6 @@ $config = str_replace('{$db_prefix}', $db_prefix, $config);
 $config = str_replace('{$site_url}', $site_url, $config);
 $config = str_replace('{$site_dir}', $site_dir, $config);
 $config = str_replace('{$time_zone}', $time_zone, $config);
-$config = str_replace('{$admin_name}', $admin_name, $config);
-$config = str_replace('{$admin_pass}', $admin_pass, $config);
 
 
 // create config file
@@ -35,10 +36,6 @@ $file = fopen($site_dir . '/config.php', 'w'); // create or open config.php
 //$config = "\xEF\xBB\xBF" . $config; // make the file UTF Encoded
 fwrite($file, $config); // write to config file
 fclose($file); // close
-
-
-
-
 
 // get base
 preg_match('#^https?#i', $site_url, $protocol);
@@ -55,6 +52,7 @@ else
 
 // get htaccess content
 include 'htaccess.template.php';
+
 $htaccess = $htaccess_tpl;
 $htaccess = str_replace('{$base}', $base , $htaccess);
 
@@ -64,7 +62,15 @@ $file = fopen($site_dir . '/.htaccess', 'w'); // create or open
 fwrite($file, $htaccess); // write
 fclose($file); // close
 
-echo $site_url;
 
+// add Admin User
+require '../../config.php';
+Won::set(new User());
+Won::get('User')->add_user($admin_username, $admin_password, $admin_name, $admin_email, true, false);
+Won::get('User')->add_group('Administrator', false);
+Won::get('User')->add_group('Member');
+Won::get('User')->add_user_to_group($admin_username, 'Administrator');
+Won::get('User')->add_user_to_group($admin_username, 'Member');
 
 ?>
+<a href="<?=$site_url?>/admin">here</a>

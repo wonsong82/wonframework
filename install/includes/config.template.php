@@ -16,53 +16,44 @@ date_default_timezone_set('{$time_zone}');
 // Set time limit to 0
 set_time_limit(0);
 
-// Administrator Info
-define('ADMIN_NAME', '{$admin_name}');
-define('ADMIN_PASS', '{$admin_pass}');
+// Setup Config
+Won::set(new Config());
+Won::get('Config')->site_url 			= '{$site_url}';
+Won::get('Config')->site_dir 			= '{$site_dir}';
+Won::get('Config')->content_url 		= '{$site_url}/contents';
+Won::get('Config')->content_dir 		= '{$site_dir}/contents';
+Won::get('Config')->admin_url 			= '{$site_url}/admin';
+Won::get('Config')->admin_dir 			= '{$site_dir}/admin_site';
+Won::get('Config')->admin_content_url 	= '{$site_url}/admin_site/contents';
+Won::get('Config')->admin_content_dir 	= '{$site_dir}/admin_site/contents';
+Won::get('Config')->module_url 			= '{$site_url}/modules';
+Won::get('Config')->module_dir 			= '{$site_dir}/modules';
+Won::get('Config')->include_dir			= '{$site_dir}/contents/includes';
+Won::get('Config')->loaded				= true;
 
-// Site definitions.
+// Setup Sql
+Won::set(new DB());
+Won::get('DB')->connect_sql('{$db_host}', '{$db_user}', '{$db_pass}', '{$db_db}');
+Won::get('DB')->prefix = '{$db_prefix}';
 
-// Website URL & DIR
-define('SITE_URL', '{$site_url}');
-define('SITE_DIR', '{$site_dir}');
-
-// Module URL & DIR
-define('MODULE_URL', SITE_URL . '/modules');
-define('MODULE_DIR', SITE_DIR . '/modules');
-
-// Content URL & DIR
-define('CONTENT_URL',  SITE_URL . '/contents');
-define('CONTENT_DIR', SITE_DIR . '/contents');
-
-// Content Includes DIR
-define('INCLUDE_DIR', CONTENT_DIR . '/includes');
-
-// Admin URL & DIR
-define('ADMIN_URL', SITE_URL . '/admin');
-define('ADMIN_DIR', SITE_DIR . '/admin');
-
-// SQL Initialize
-Sql::connect('{$db_host}', '{$db_user}', '{$db_pass}', '{$db_db}');
-Sql::prefix('{$db_prefix}');
-
-// Auto-load modules
+// Autoload Classes
 function __autoload(\$class_name)
 {
-	\$class_file =  MODULE_DIR . '/' . \$class_name . '/' . \$class_name . '.php';
+	\$module_class	= '{$site_dir}/modules/' . \$class_name . '/' . \$class_name . '.php';
+	\$core_class 	= '{$site_dir}/modules/Core/'  . \$class_name . '.php';
 	
-	if (file_exists(\$class_file))
-	{	
-		require_once \$class_file;
-	}
+	if (file_exists(\$module_class))		
+		require \$module_class;	
+	
+	elseif (file_exists(\$core_class))	
+		require \$core_class;	
 	
 	else
 	{
-		echo \$class_name . ' module is missing.';
+		throw new ErrorException(\$class_name . ' Module is Missing.');
 		exit();
 	}
 }
-
-define('CONFIG_LOADED',1);
 ?>
 CON;
 ?>

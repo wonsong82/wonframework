@@ -46,7 +46,7 @@ function create_config(e) {
 			loading.off();	
 			
 			$('#finish-head').html('Setup Completed');
-			$('#finish-msg').html('Congratulation!<br/>Installation completed.<br/>Click <a href="'+data+'/admin">here</a> to go to the admin page.');
+			$('#finish-msg').html('Congratulation!<br/>Installation completed.<br/>Click ' + data + ' to go to the admin page.');
 			
 		}
 	});	

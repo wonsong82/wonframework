@@ -4,7 +4,7 @@ $htaccess_tpl = <<<HTA
 SetEnv HTTP_MOD_REWRITE On
 RewriteEngine On
 RewriteBase {$base}
-RewriteRule ^index\.php$ - [L]
+RewriteRule ^index\.php\$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . {$base}index.php [L]

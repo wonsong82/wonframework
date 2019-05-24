@@ -1,5 +1,6 @@
 <?php
-class Permalink
+// ModuleNavigationSortOrder=3;
+class Permalink extends WonClass
 {
 	/**
 	 * @name $uri
@@ -8,7 +9,7 @@ class Permalink
 	 */
 	public $uri;
 	
-	
+		
 	/**
 	 * @name $title
 	 * @desc Title of the current requested page.
@@ -48,16 +49,12 @@ class Permalink
 	 */
 	private $table;
 	
-	
 	/**
-	 * @name $error
-	 * @desc Error if any
+	 * @name $link_structure
+	 * @desc current permalinks's link structure
 	 * @type string
 	 */
-	public $error;
-	
-	
-	
+	private $link_structure;
 		
 	/**
 	 * @name Permalink()
@@ -65,21 +62,29 @@ class Permalink
 	 * @param none	 
 	 * @return void
 	 */
-	public function __construct()
+	 
+	 public $is_admin = false;
+	 
+	public function init()
 	{
-		// load config
-		if (!defined('CONFIG_LOADED'))
-			require_once '../../config.php';
-		
 		// initialize table
-		$this->table = Sql::prefix() . 'permalink';
-		$this->initialize_table();		
+		$this->table = Won::get('DB')->prefix . 'permalink';
+		$this->initialize_table();			
 		
 		// parse url information from the current request	
-		$this->parse_url();			
+		$this->parse_url();	
 		
 		// parse template information from the current url information
-		$this->parse_template();			
+		$this->parse_template();
+		
+		// content or admin ?
+		if (preg_match('#(^admin$|^admin/)#', $this->uri))
+		{
+			$this->template = Won::get('Config')->admin_dir .'/' . $this->template;
+			$this->is_admin = true;
+		}		
+		else
+			$this->template = Won::get('Config')->content_dir . '/' . $this->template;
 	}
 	
 	
@@ -92,11 +97,9 @@ class Permalink
 	 * @return void
 	 */
 	private function initialize_table() 
-	{	
-		$sql = Sql::sql();
-		
+	{		
 		//if table not exist, create the table
-		$sql->query("		
+		Won::get('DB')->sql->query("		
 			CREATE TABLE IF NOT EXISTS `{$this->table}` (
 				`id` SERIAL NOT NULL,
 				`uri` VARCHAR(255) NOT NULL,
@@ -105,16 +108,25 @@ class Permalink
 				PRIMARY KEY (`id`),
 				UNIQUE (`uri`)
 			) ENGINE = INNODB CHARSET `utf8` COLLATE `utf8_general_ci`			
-		") or die($sql->error);		
+		") or die(Won::get('DB')->sql->error);		
 		
 		// add error page if it does not exist 
-		$errorpage = $sql->query("		
+		$errorpage = Won::get('DB')->sql->query("		
 			SELECT * FROM `{$this->table}`
 			WHERE `uri` = '404error'		
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 					
 		if (!$errorpage->num_rows)
-			$this->add('/404error', 'Page Cannot Be Found', '404error.php');
+			$this->add('404error', 'Page Cannot Be Found', '404error.php');
+		
+		// add admin page if it does not exist
+		$adminpage = Won::get('DB')->sql->query("
+			SELECT * FROM `{$this->table}`
+			WHERE `uri` = 'admin/\$module/\$page/\$params'
+		") or die(Won::get('DB')->sql->error);
+		
+		if (!$adminpage->num_rows)
+			$this->add('admin/$module/$page/$params', 'Webwon Content Manager', 'index.php');
 	}
 	
 	
@@ -141,12 +153,13 @@ class Permalink
 		if ($req->url != $con->url)
 		{			
 			header ('HTTP/1.1 301 Moved Permanently');
-			header ('Location: ' . $con->url); 	
+			header ('Location: ' . $con->url); 
+			exit();
 		}
 		
 		// get real uri for parsing template
 		$this->url = trim($con->url, '/');
-		$this->uri = trim(str_replace(SITE_URL, '', $con->url) , '/');		
+		$this->uri = trim(str_replace(Won::get('Config')->site_url, '', $con->url) , '/');				
 		
 	}
 	
@@ -182,10 +195,10 @@ class Permalink
 	private function parse_url_from_config()
 	{
 		// get protocol http or https
-		preg_match('#https?#i', SITE_URL, $protocol);		
+		preg_match('#https?#i', Won::get('Config')->site_url, $protocol);		
 		$config_url->protocol = strtolower($protocol[0]). '://';	
 		
-		$host = explode('/', trim(str_replace($config_url->protocol, '', SITE_URL)));	
+		$host = explode('/', trim(str_replace($config_url->protocol, '', Won::get('Config')->site_url)));	
 			
 		$config_url->host = $host[0];
 		$config_url->uri = $_SERVER['REQUEST_URI'];
@@ -204,15 +217,15 @@ class Permalink
 	 */			
 	private function parse_template()
 	{
-		$sql = Sql::sql();
+		
 		
 		$uri = $this->uri;		
 		
 		// first find static pages			
-		$templates = $sql->query("		
+		$templates = Won::get('DB')->sql->query("		
 			SELECT * FROM `{$this->table}`
 			WHERE `uri` = '$this->uri'		
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 		
 		// if static page is found
 		if ($templates->num_rows)
@@ -220,16 +233,17 @@ class Permalink
 			$template = $templates->fetch_assoc();
 			$this->title = $template['title'];			
 			$this->template = $template['template_path'];
+			$this->link_structure = $template['uri'];
 			return true;
 		}
 		
 		// if static page isn't found
 									
 		// dynamic uris
-		$dynamic_uris = $sql->query("			
+		$dynamic_uris = Won::get('DB')->sql->query("			
 			SELECT * FROM `{$this->table}`
 			WHERE `uri` LIKE '%\$%'			
-		") or die ($sql->error);
+		") or die (Won::get('DB')->sql->error);
 		
 		if ($dynamic_uris->num_rows)
 		{
@@ -244,6 +258,7 @@ class Permalink
 					{
 						$this->template = $dynamic_uri['template_path'];
 						$this->title = $dynamic_uri['title'];
+						$this->link_structure = $dynamic_uri['uri'];
 						
 						$keys = explode('/', $dynamic_uri['uri']);
 						$values = explode('/', trim(str_replace($d_uri, '', $uri), '/'));					
@@ -267,18 +282,19 @@ class Permalink
 		
 		
 		// if cannot be found, display 404 error template			
-		$templates = $sql->query("
+		$templates = Won::get('DB')->sql->query("
 		
 		SELECT * FROM `{$this->table}`
 		WHERE `uri` = '404error'
 		
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 		
 		if ($templates->num_rows)
 		{
 			$template = $templates->fetch_assoc();
 			$this->title = $template['title'];			
 			$this->template = $template['template_path'];
+			$this->link_structure = $template['uri'];
 		}
 		
 		return false;		
@@ -292,23 +308,58 @@ class Permalink
 	 * @param none
 	 * @return array
 	 */	
-	public function get_list()
+	public function get_list($include_admin=false)
 	{
-		$sql = Sql::sql();
 		
-		$links = $sql->query("
+		
+		$links = Won::get('DB')->sql->query("
 			SELECT * FROM `{$this->table}`
 			ORDER BY `id`
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 		
 		$list = array();
 		
 		if ($links->num_rows)		
-			while ($link = $links->fetch_assoc()) 			
-				$list[] = $link;	
+			while ($link = $links->fetch_assoc())
+			{
+				if ($include_admin || !preg_match('#(^admin$|^admin/)#', $link['uri'])) 			
+					$list[] = $link;
+			}
 		
 		return $list;
 	}
+	
+	
+	
+	
+	/**
+	 * @name get_class()
+	 * @desc Parse variables from uri sent, including $params, and get strings
+	 * @param none
+	 * @return string
+	 */
+	public function get_class()
+	{
+		$vars = explode('/', $this->uri);
+		$classes = array();
+		foreach ($vars as $var) 
+		{			
+			if (false === strpos($var, '=')) // see if the param has get string
+				$classes[] = $var;
+			
+			else
+			{
+				foreach (explode('&', $var) as $param)
+				{
+					preg_match('#^(.+)=(.+)$#' , $param, $match);
+					$classes[] = $match[1] . '-' . $match[2];	
+				}
+			}
+		}
+		
+		return implode(' ', $classes);
+	}
+	
 	
 	
 	/**
@@ -321,20 +372,20 @@ class Permalink
 	 */
 	public function add($uri, $title, $template_path)
 	{
-		$sql = Sql::sql();
-				
 		// uri should not contain '/' at the beginning or at the end
-		$uri = $sql->real_escape_string(trim(trim($uri),'/'));		
+		$uri = Won::get('DB')->sql->real_escape_string(trim(trim($uri),'/'));		
 		
 		// title must be escaped
-		$title = $sql->real_escape_string(trim($title));
+		$title = Won::get('DB')->sql->real_escape_string(trim($title));
 			
-		$sql->query("			
+		Won::get('DB')->sql->query("			
 			INSERT INTO `{$this->table}` 
 			SET `uri` = '$uri',
 				`title` = '$title',
 				`template_path` = '$template_path'			
-		") or die($sql->error);		
+		") or die(Won::get('DB')->sql->error);		
+		
+		$template_path = Won::get('Config')->content_dir . '/' . $template_path;
 		
 		$this->create_template($template_path);
 	}
@@ -350,12 +401,10 @@ class Permalink
 	 */	
 	public function remove($id)
 	{
-		$sql = Sql::sql();
-		
-		$sql->query("			
+		Won::get('DB')->sql->query("			
 			DELETE FROM `{$this->table}`
 			WHERE `id` = '{$id}'			
-		") or die($sql->error);
+		") or die(Won::get('DB')->sql->error);
 	}
 	
 	
@@ -369,18 +418,14 @@ class Permalink
 	 * @return void
 	 */		
 	public function update($id, $key, $value)
-	{
-		$sql = Sql::sql();
-		
+	{		
 		$value = trim($value);
 			
-		$sql->query("		
+		Won::get('DB')->sql->query("		
 			UPDATE `{$this->table}`
 			SET		`{$key}` = '{$value}'
 			WHERE `id` = '{$id}'		
-		") or die($sql->error);
-		
-		echo $id;
+		") or die(Won::get('DB')->sql->error);	
 	}
 		
 	
@@ -393,7 +438,7 @@ class Permalink
 	 */		
 	private function create_template($template_path)
 	{	
-		$template_path = CONTENT_DIR . '/' . $template_path;
+		//$template_path = SITE_DIR . '/' . $template_path;
 
 		if (!file_exists($template_path))
 		{
@@ -404,7 +449,62 @@ class Permalink
 	}	
 	
 	
+	/**
+	 * @name url_friendly_title($title, $table)
+	 * @desc Returns url friendly title for the table passed in
+	 * @param string $title : String to be modified from
+	 * @param string $table : Name of the table
+	 * @return string
+	 */	
+	public function url_friendly_title($title, $table)
+	{		
+		$title = strtolower(strip_tags(trim($title)));
+		$title = preg_replace('#[^a-zA-Z0-9-_\s]#s', '' , $title);	
+		$title = preg_replace('#\s{2,}#', ' ',  $title);
+		$title = str_replace(' ', '-', $title);		
+		
+		$title_numbered = '';
+				
+		$dup = Won::get('DB')->sql->query("
+			SELECT `id` FROM `{$table}`
+			WHERE `url_friendly_title` = '$title'
+		") or die(Won::get('DB')->sql->error);	
+		
+		$i = 2;
+		while ($dup->num_rows)
+		{
+			$title_numbered = $title . '-' . $i;
+			$dup = Won::get('DB')->sql->querY("
+				SELECT `id` FROM `{$table}`
+				WHERE `url_friendly_title` = '$title_numbered'
+			") or die(Won::get('DB')->sql->error);
+			$i++;
+		}		
+		
+		return $title_numbered? $title_numbered : $title;	
+	}	
 	
+	/**
+	 * @name parse_get($params)
+	 * @desc Parse get string into array
+	 * @param string params : get string
+	 * @return array
+	 */	
+	public function parse_get($params=null)
+	{		
+		$output = array();
+							
+		if (false !== strpos($params, '=')) // see if the param has get string
+		{
+			foreach (explode('&', $params) as $param)
+			{
+				preg_match('#^(.+)=(.+)$#' , $param, $match);
+				$output[$match[1]] = $match[2];
+			}
+		}
+		
+		return $output;		
+	}
 }
 
 
