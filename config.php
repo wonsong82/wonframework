@@ -1,56 +1,30 @@
 <?php
-/*** 
-/* Program : Webwon Config
-/* Author : Won Song
-/* Description : Webwon config file
- ***/
+// Set Dirs
+$registry->config->site			= 'http://www.won.com/webwon/src3.0/';
+$registry->config->adminPage	= 'admin/';
+$registry->config->admin		= 'http://www.won.com/webwon/src3.0/admin/';
+$registry->config->content		= 'http://www.won.com/webwon/src3.0/website/';
+$registry->config->adminContent	= 'http://www.won.com/webwon/src3.0/website_admin/';
+$registry->config->module		= 'http://www.won.com/webwon/src3.0/system/module/';
+$registry->config->library		= 'http://www.won.com/webwon/src3.0/system/library/';
+$registry->config->script		= 'http://www.won.com/webwon/src3.0/system/script/';
+$registry->config->siteDir		= 'F:/Websites/webwon/src3.0/';
+$registry->config->contentDir	= 'F:/Websites/webwon/src3.0/website/';
+$registry->config->adminContentDir = 'F:/Websites/webwon/src3.0/website_admin/';
+$registry->config->moduleDir	= 'F:/Websites/webwon/src3.0/system/module/';
+$registry->config->libraryDir	= 'F:/Websites/webwon/src3.0/system/library/';
+$registry->config->helperDir	= 'F:/Websites/webwon/src3.0/system/helper/';
+$registry->config->scriptDir	= 'F:/Websites/webwon/src3.0/system/script/';
 
-// Start the session 
-session_start();
-$_SESSION['woncms_sessid'] ='123456789';
+$registry->config->timezone		= 'US/Eastern';
+$registry->config->dbHost		= 'localhost';
+$registry->config->dbUser		= 'root';
+$registry->config->dbPass		= '777';
+$registry->config->dbDb			= 'webwon';
+$registry->config->dbPrefix		= 'won_';
 
-// Set default time zone
-date_default_timezone_set('US/Eastern');
+$registry->config->charset		= 'utf8';
+$registry->config->collate		= 'utf8_general_ci';
 
-// Set time limit to 0
-set_time_limit(0);
-
-// Setup Config
-Won::set(new Config());
-Won::get('Config')->site_url 			= 'http://www.won.com/webwon/src2.0';
-Won::get('Config')->site_dir 			= 'H:/Websites/webwon/src2.0';
-Won::get('Config')->content_url 		= 'http://www.won.com/webwon/src2.0/contents';
-Won::get('Config')->content_dir 		= 'H:/Websites/webwon/src2.0/contents';
-Won::get('Config')->admin_url 			= 'http://www.won.com/webwon/src2.0/admin';
-Won::get('Config')->admin_dir 			= 'H:/Websites/webwon/src2.0/admin_site';
-Won::get('Config')->admin_content_url 	= 'http://www.won.com/webwon/src2.0/admin_site/contents';
-Won::get('Config')->admin_content_dir 	= 'H:/Websites/webwon/src2.0/admin_site/contents';
-Won::get('Config')->module_url 			= 'http://www.won.com/webwon/src2.0/modules';
-Won::get('Config')->module_dir 			= 'H:/Websites/webwon/src2.0/modules';
-Won::get('Config')->include_dir			= 'H:/Websites/webwon/src2.0/contents/includes';
-Won::get('Config')->loaded				= true;
-
-// Setup Sql
-Won::set(new DB());
-Won::get('DB')->connect_sql('localhost', 'root', '777', 'webwon');
-Won::get('DB')->prefix = 'won_';
-
-// Autoload Classes
-function __autoload($class_name)
-{
-	$module_class	= 'H:/Websites/webwon/src2.0/modules/' . $class_name . '/' . $class_name . '.php';
-	$core_class 	= 'H:/Websites/webwon/src2.0/modules/Core/'  . $class_name . '.php';
-	
-	if (file_exists($module_class))		
-		require $module_class;	
-	
-	elseif (file_exists($core_class))	
-		require $core_class;	
-	
-	else
-	{
-		throw new ErrorException($class_name . ' Module is Missing.');
-		exit();
-	}
-}
+$registry->config->loaded		= true;
 ?>

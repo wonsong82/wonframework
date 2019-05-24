@@ -1,4 +1,0 @@
-<?php
-// ModuleNavigationSortOrder=1;
-
-?>

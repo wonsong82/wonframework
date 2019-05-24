@@ -1,39 +1,36 @@
 <?php
-/**
- * @package Webwon
- * @name index.php
- * @author Won Song
- * @desc Load configs and contents
- */
+// Version : 3.0
+set_time_limit(0);
 
 
-// Redirect to install for the first time
-if (!file_exists('config.php')) 
-{
+// Install
+if (!file_exists(dirname(__FILE__).'/config.php')) {
 	header('location:install');
 	exit();
 }
 
-// Load config
-require 'config.php';
-
-// set and enable permalink
-Won::set(new Permalink());
-
-// if function exists, load functions
-is_dir(Won::get('Config')->include_dir) || 
-mkdir(Won::get('Config')->include_dir);
-
-if (!Won::get('Permalink')->is_admin)
-{
-	$includes = opendir(Won::get('Config')->include_dir);
-	while (false !== ($file = readdir($includes)))
-	{
-		if (preg_match('#\.php$#', $file))
-			require Won::get('Config')->include_dir . '/' . $file;
-	}
+// Load Engines
+foreach (glob(dirname(__FILE__).'/system/engine/*.php') as $startEngine) {
+	require_once $startEngine;
 }
 
-Won::set(new Template());
-Won::get('Template')->printTemplate();
+// Start the Registry
+$registry = new Registry();
+
+// Load Config
+require_once dirname(__FILE__).'/config.php';
+
+
+// Initialize
+date_default_timezone_set($registry->config->timezone); // Set Timezone
+
+$registry->lib->import('helper.magicQuotesFix'); // Run Fixes
+$registry->lib->import('helper.registerGlobalsFix'); //
+
+$registry->session->start(); // Start the Session
+
+$registry->db;
+
+// Output the Http Response
+$registry->template->output();
 ?>

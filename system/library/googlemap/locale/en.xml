@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<messagebundle> 
+  <msg name="title">Directions by Google Maps</msg> 
+  <msg name="description">Easily provide users with personalized driving and walking directions from Google Maps to all of your business locations.</msg> 
+  <msg name="from_locations_display_name">Origin (leave blank to let users type their own)</msg> 
+  <msg name="locations_display_name">Destination (separate several with a | symbol)</msg> 
+  <msg name="sample_locations">1600 Amphitheatre Pkway, Mountain View, CA (Googleplex)</msg> 
+  <msg name="default_type_display_name">Default directions type</msg> 
+  <msg name="or_enter_your_own">Or enter your own…</msg> 
+  <msg name="couldnt_understand">We couldn’t understand the location</msg> 
+  <msg name="suggestions">Suggestions:</msg> 
+  <msg name="spelled_correctly">Make sure all street and city names are spelled correctly.</msg> 
+  <msg name="city_and_state">Make sure your address includes a city and state.</msg> 
+  <msg name="zip_code">Try entering a ZIP code.</msg> 
+  <msg name="did_you_mean">Or did you mean:</msg> 
+  <msg name="couldnt_calculate">We couldn’t calculate directions from </msg> 
+  <msg name="couldnt_calculate_to"> to </msg> 
+  <msg name="couldnt_calculate_end">.</msg> 
+  <msg name="from">From</msg> 
+  <msg name="example_from_address">Enter your starting point here</msg> 
+  <msg name="to">To</msg> 
+  <msg name="to_address_hint">Enter your destination here</msg> 
+  <msg name="set_default_from_location">Set as default location</msg> 
+  <msg name="clear_default_from_location">Clear default location</msg> 
+  <msg name="return_to_list">Return to list</msg>
+  <msg name="use_current_location">Use my current location</msg>
+  <msg name="couldnt_determine_location">Your browser could not determine your location. Try again?</msg>
+  <msg name="by_car">By car</msg> 
+  <msg name="walking">Walking</msg> 
+  <msg name="public_transit">Public Transit</msg> 
+  <msg name="cycling">Bicycling</msg> 
+  <msg name="go">Go</msg> 
+  <msg name="also_available">Also available</msg> 
+  <msg name="print">Print</msg> 
+  <msg name="larger">View Larger Map</msg> 
+  <msg name="add_this">Add this gadget to your site</msg> 
+  <msg name="traffic">Traffic</msg>
+  <msg name="error">The requested route couldn't be calculated. Please check your location and try again.</msg>
+</messagebundle>

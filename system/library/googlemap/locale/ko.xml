@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<messagebundle> 
+  <msg name="title">Google 지도로 길찾기</msg> 
+  <msg name="description">업체 위치에 대한 운전경로와 도보경로로 손쉽게 알려드립니다.</msg> 
+  <msg name="from_locations_display_name">출발지(직접 입력하도록 빈 칸으로)</msg> 
+  <msg name="locations_display_name">도착지(한 개 이상인 경우 '|' 기호로 구분)</msg> 
+  <msg name="sample_locations">1600 Amphitheatre Pkway, Mountain View, CA (Googleplex)</msg> 
+  <msg name="default_type_display_name">기본 길찾기 유형</msg> 
+  <msg name="or_enter_your_own">직접 입력</msg> 
+  <msg name="couldnt_understand">위치를 찾을 수 없습니다.</msg> 
+  <msg name="suggestions">제안:</msg> 
+  <msg name="spelled_correctly">모든 거리와 시 이름을 정확히 입력했는지 확인해 주세요.</msg> 
+  <msg name="city_and_state">주소를 입력할 때 시/군/구 이름을 반드시 입력해 주세요.</msg> 
+  <msg name="zip_code">우편번호를 입력해 보세요.</msg> 
+  <msg name="did_you_mean">또는 다음을 검색</msg> 
+  <msg name="couldnt_calculate" /> 
+  <msg name="couldnt_calculate_to">에서 </msg> 
+  <msg name="couldnt_calculate_end">까지의 경로를 계산할 수 없습니다.</msg> 
+  <msg name="from">출발지</msg> 
+  <msg name="example_from_address">출발지 입력</msg> 
+  <msg name="to">도착지</msg> 
+  <msg name="to_address_hint">도착지 입력</msg> 
+  <msg name="set_default_from_location">기본 위치로 설정</msg> 
+  <msg name="clear_default_from_location">기본 위치 초기화</msg> 
+  <msg name="return_to_list">리스트로 돌아가기</msg>
+  <msg name="use_current_location">현재 위치 사용</msg>
+  <msg name="couldnt_determine_location">위치를 찾을 수 없습니다.</msg>
+  <msg name="by_car">운전경로</msg> 
+  <msg name="walking">도보경로</msg> 
+  <msg name="public_transit">대중교통</msg> 
+  <msg name="cycling">자전거경로</msg> 
+  <msg name="go">이동</msg> 
+  <msg name="also_available">기타</msg> 
+  <msg name="print">출력</msg> 
+  <msg name="larger">크게 보기</msg> 
+  <msg name="add_this">사이트에 가젯 추가</msg> 
+  <msg name="traffic">트래픽</msg>
+  <msg name="error">입력하신 위치로부터 길을 찾을 수 없습니다. 주소를 확인후 다시 시도해 주십시요.</msg>
+  
+</messagebundle>
