@@ -1,6 +1,19 @@
 <?php
-// webwon installer
+/**
+ * @package Installer
+ * @name index.php
+ * @author Won Song
+ */
 
+$content = file_exists('../config.php')? 'installed.php' : 'install.php';
+
+require "./templates/{$content}";
+
+
+
+
+
+/*
 
 // check for the config file
 $installed = file_exists('../config.php')? true : false;
@@ -38,3 +51,5 @@ $installed = file_exists('../config.php')? true : false;
 
 
 </html>
+
+*/

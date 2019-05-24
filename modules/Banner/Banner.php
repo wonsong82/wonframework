@@ -8,7 +8,7 @@ class Banner
 	 */	
 	 private $table;
 	
-	
+	public $error;
 	
 	
 	/**
@@ -22,7 +22,7 @@ class Banner
 		if (!defined('CONFIG_LOADED'))
 			require_once '../../config.php';
 			
-		$this->table = DB_PREFIX . 'banner';
+		$this->table = Sql::prefix() . 'banner';
 		$this->init_table();	
 	}
 
@@ -37,7 +37,7 @@ class Banner
 	 */
 	private function init_table() 
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$sql->query("
 		
@@ -65,7 +65,7 @@ class Banner
 	 */
 	public function get_banners() 
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$index = 1;
 		
@@ -108,17 +108,17 @@ class Banner
 	 */		
 	public function update($id, $key, $value)
 	{
-		global $sql;
-		$value = $sql->real_escape_string($value);
+		$sql = Sql::sql();
+		
+		$value = $sql->real_escape_string(trim($value));
 		
 		$sql->query("
-		
+			
 			UPDATE `{$this->table}`
 			SET		`{$key}` = '{$value}'
 			WHERE `id` = '{$id}'
 		
-		") or die($sql->error);
-		
+		");		
 	}
 	
 	
@@ -136,7 +136,7 @@ class Banner
 	 */	
 	public function add($imgpath, $title, $desc, $link)
 	{
-		global $sql;		
+		$sql = Sql::sql();		
 		
 		$imgpath = $sql->real_escape_string(trim($imgpath));
 		$title = $sql->real_escape_string(trim($title));
@@ -164,7 +164,7 @@ class Banner
 	 */	
 	public function remove($id)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$sql->query("
 			
@@ -184,7 +184,7 @@ class Banner
 	 */	
 	public function swap($id1, $id2)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		// get $temp_id from $last_id + 1
 		$last = $sql->query("

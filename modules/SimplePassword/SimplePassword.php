@@ -57,8 +57,8 @@ class SimplePassword
 	
 	// if not logged, display the login form and exit the program.
 	private static function display_login_form($error)
-	{		
-		echo '<form action="'. $_SERVER['PHP_SELF'] .'" method="post">' .
+	{
+		echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">' .
 				'Password : <input name="'.SimplePassword::$prefix.'" type="password" />' .
 			'</form>';
 		echo '<script>document.forms[0].'.SimplePassword::$prefix.'.focus();</script>';

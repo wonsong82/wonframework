@@ -49,6 +49,14 @@ class Permalink
 	private $table;
 	
 	
+	/**
+	 * @name $error
+	 * @desc Error if any
+	 * @type string
+	 */
+	public $error;
+	
+	
 	
 		
 	/**
@@ -64,7 +72,7 @@ class Permalink
 			require_once '../../config.php';
 		
 		// initialize table
-		$this->table = DB_PREFIX . 'permalink';
+		$this->table = Sql::prefix() . 'permalink';
 		$this->initialize_table();		
 		
 		// parse url information from the current request	
@@ -85,7 +93,7 @@ class Permalink
 	 */
 	private function initialize_table() 
 	{	
-		global $sql;
+		$sql = Sql::sql();
 		
 		//if table not exist, create the table
 		$sql->query("		
@@ -196,7 +204,7 @@ class Permalink
 	 */			
 	private function parse_template()
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$uri = $this->uri;		
 		
@@ -286,7 +294,7 @@ class Permalink
 	 */	
 	public function get_list()
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$links = $sql->query("
 			SELECT * FROM `{$this->table}`
@@ -313,7 +321,7 @@ class Permalink
 	 */
 	public function add($uri, $title, $template_path)
 	{
-		global $sql;
+		$sql = Sql::sql();
 				
 		// uri should not contain '/' at the beginning or at the end
 		$uri = $sql->real_escape_string(trim(trim($uri),'/'));		
@@ -342,7 +350,7 @@ class Permalink
 	 */	
 	public function remove($id)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$sql->query("			
 			DELETE FROM `{$this->table}`
@@ -362,16 +370,17 @@ class Permalink
 	 */		
 	public function update($id, $key, $value)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
-		$sql->query("
-		
+		$value = trim($value);
+			
+		$sql->query("		
 			UPDATE `{$this->table}`
 			SET		`{$key}` = '{$value}'
-			WHERE `id` = '{$id}'
-		
+			WHERE `id` = '{$id}'		
 		") or die($sql->error);
-	
+		
+		echo $id;
 	}
 		
 	

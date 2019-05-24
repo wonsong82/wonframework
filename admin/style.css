@@ -30,7 +30,7 @@ a:hover {
 	text-align:right;
 	width:100%;	
 	background:#e5e5e5;
-	border-bottom:1px solid #d3d3d3;
+	border-bottom:1px solid #d3d3d3;	
 }
 #brand {
 	float:left;
@@ -126,4 +126,9 @@ input.disabled {
 }
 .help div {
 	display:none;
+}
+.loading {
+	width:16px;
+	height:11px;
+	background:url(images/loading.gif) 0 0 no-repeat;
 }

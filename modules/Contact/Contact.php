@@ -140,13 +140,13 @@ class Contact
 		if (!defined('CONFIG_LOADED'))
 			require_once '../../config.php';
 		
-		$this->table = DB_PREFIX . 'contact';			
+		$this->table = Sql::prefix() . 'contact';			
 		$this->initialize();		
 	}
 	
 	private function initialize()
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$sql->query("
 			
@@ -205,20 +205,29 @@ class Contact
 	
 	public function update($key, $value)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
-		$sql->query("
+		$key;
+		$value = $sql->real_escape_string(htmlspecialchars(trim($value)));
 		
-			UPDATE `{$this->table}`
-			SET		`{$key}` = '{$value}'
+		if ($this->validate($key, $value))
+		{		
+			$sql->query("			
+				UPDATE `{$this->table}`
+				SET		`{$key}` = '{$value}'			
+			");
+			return true;
+		}
 		
-		") or die($sql->error);
+		else
+			return false;
 	}
+		
 		
 	
 	public function update_all($name, $phone_areacode, $phone_first, $phone_last, $fax_areacode, $fax_first, $fax_last, $street, $apt, $city, $state, $country, $zip, $email, $website)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$sql->query("
 		
@@ -246,7 +255,7 @@ class Contact
 	
 	private function refresh_list()
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$contacts = $sql->query("
 			
@@ -264,7 +273,7 @@ class Contact
 	}
 	
 	
-	public function validate($key, $value)
+	private function validate($key, $value)
 	{
 		$error = '';
 		

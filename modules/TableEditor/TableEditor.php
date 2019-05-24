@@ -10,12 +10,10 @@ class TableEditor
 	
 	public function list_tables()
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
-		$tables = $sql->query("
-		
-			SHOW TABLES;
-		
+		$tables = $sql->query("		
+			SHOW TABLES;		
 		") or die($sql->error);
 		
 		if ($tables->num_rows) 
@@ -35,12 +33,10 @@ class TableEditor
 	
 	public function get_table_structure($table_name)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
-		$struct = $sql->query("
-		
-			SHOW COLUMNS FROM `{$table_name}`
-			
+		$struct = $sql->query("		
+			SHOW COLUMNS FROM `{$table_name}`			
 		") or die ($sql->error);
 		
 		if ($struct->num_rows != 0)
@@ -60,12 +56,10 @@ class TableEditor
 	
 	public function get_table($table_name)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
-		$table = $sql->query("
-		
-			SELECT * FROM `{$table_name}`
-		
+		$table = $sql->query("		
+			SELECT * FROM `{$table_name}`		
 		") or die($sql->error);
 		
 				
@@ -85,34 +79,30 @@ class TableEditor
 	
 	public function update($table_name, $id, $key, $val)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$val = $sql->real_escape_string(trim($val));
 		
-		$sql->query("
-		
+		$sql->query("		
 			UPDATE `{$table_name}`
 			SET `{$key}` = '{$val}'
-			WHERE `id` = '$id'
-		
+			WHERE `id` = '$id'		
 		") or die($sql->error);
 	}
 	
 	public function delete($table_name, $id)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
-		$sql->query("
-			
+		$sql->query("			
 			DELETE FROM `{$table_name}`
-			WHERE `id` = '$id'
-		
+			WHERE `id` = '$id'		
 		") or die($sql->error);
 	}
 	
 	public function add($table_name, $param)
 	{
-		global $sql;
+		$sql = Sql::sql();
 		
 		$set = array();
 		foreach ($param as $key=>$val) 
@@ -122,11 +112,9 @@ class TableEditor
 		}
 		$set = implode(', ' , $set);
 		
-		$sql->query("
-		
+		$sql->query("		
 			INSERT INTO `{$table_name}`
-			SET {$set}
-		
+			SET {$set}		
 		") or die($sql->error);
 	}
 	

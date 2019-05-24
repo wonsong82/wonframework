@@ -9,20 +9,20 @@
 session_start();
 
 // Set default time zone
-date_default_timezone_set('US/Eastern');
+date_default_timezone_set('{$time_zone}');
 
 // Set time limit to 0
 set_time_limit(0);
 
 // Administrator Info
-define('ADMIN_NAME', 'admin');
-define('ADMIN_PASS', 'f1c1592588411002af340cbaedd6fc33');
+define('ADMIN_NAME', '{$admin_name}');
+define('ADMIN_PASS', '{$admin_pass}');
 
 // Site definitions.
 
 // Website URL & DIR
-define('SITE_URL', 'http://www.won.com/webwon/src1.1');
-define('SITE_DIR', 'H:/Websites/webwon/src1.1');
+define('SITE_URL', '{$site_url}');
+define('SITE_DIR', '{$site_dir}');
 
 // Module URL & DIR
 define('MODULE_URL', SITE_URL . '/modules');
@@ -37,8 +37,8 @@ define('ADMIN_URL', SITE_URL . '/admin');
 define('ADMIN_DIR', SITE_DIR . '/admin');
 
 // SQL Initialize
-Sql::connect('localhost', 'root', '777', 'webwon');
-Sql::prefix('won_');
+Sql::connect('{$db_host}', '{$db_user}', '{$db_pass}', '{$db_db}');
+Sql::prefix('{$db_prefix}');
 
 // Auto-load modules
 function __autoload($class_name)

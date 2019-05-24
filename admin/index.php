@@ -2,7 +2,7 @@
 if (!file_exists('../config.php'))
 	header('location:../install');
 
-require_once '../config.php';
+require '../config.php';
 
 $page = new Permalink();
 
@@ -17,7 +17,7 @@ $module_dir = opendir(MODULE_DIR);
 while (false !== ($module_name = readdir($module_dir)))
 {
 	$module_class = file_exists(MODULE_DIR . '/' . $module_name . '/' . $module_name . '.php');
-	$module_admin = file_exists(MODULE_DIR . '/' . $module_name . '/' . 'admin_menu.php');
+	$module_admin = file_exists(MODULE_DIR . '/' . $module_name . '/admin/' . 'admin.php');
 	
 	if ($module_class && $module_admin)
 		$modules[] = $module_name;		
@@ -26,7 +26,7 @@ while (false !== ($module_name = readdir($module_dir)))
 // nav
 $nav = '<ul>';
 foreach ($modules as $module)
-	$nav .= '<li><a href="'. MODULE_URL . '/'.$module. '" module_class="'.$module.'">' . $module . '</a></li>';
+	$nav .= '<li><a href="' . $module . '">' . $module . '</a></li>';
 $nav .= '</ul>';
 
 ?>
@@ -43,16 +43,14 @@ $nav .= '</ul>';
 <body>
 	<div id="header">
         <div id="brand">WEBWON CMS</div>        
-        <div id="greet">Hi, <b><?=ADMIN_NAME?></b>, Today is <?=date('M jS, Y l')?> <a href="controllers/logout.php">Log out</a></div>
+        <div id="greet">Hi, <b><?=ADMIN_NAME?></b>, Today is <?=date('M jS, Y l')?> <a href="logout.php">Log out</a></div>
         <div id="nav"><?=$nav?></div>
   	</div>
     
-    <div id="content">
+    <div id="content" module_dir="<?=MODULE_URL?>">
     </div>
     
-    <div id="msg"></div>
-    
-    
+    <div id="msg"></div>   
     
 </body>
 

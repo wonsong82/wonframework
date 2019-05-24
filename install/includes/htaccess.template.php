@@ -1,9 +1,9 @@
 ﻿<IfModule mod_rewrite.c>
 SetEnv HTTP_MOD_REWRITE On
 RewriteEngine On
-RewriteBase /webwon/src1.1/
+RewriteBase {$base}
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /webwon/src1.1/index.php [L]
+RewriteRule . {$base}index.php [L]
 </IfModule>
