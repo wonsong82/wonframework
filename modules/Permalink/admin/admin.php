@@ -26,7 +26,7 @@ $links = $permalink->get_list();
         <td><input rowid="<?=$link['id']?>" key="title" value="<?=$link['title']?>" size="50" /></td>
         <td><input rowid="<?=$link['id']?>" key="template_path" value="<?=$link['template_path']?>" size="40" /></td>
         <td><input class="remove-button" rowid="<?=$link['id']?>" type="button" value="Remove" /></td>
-        <td class="loading"></td>
+        <td class="msg"></td>
     </tr>
     <?php } ?>   
 </table>

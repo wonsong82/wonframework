@@ -59,7 +59,7 @@ function load_page(module, page, param)
 {
 	$(param.target).html(loading);
 	
-	var content = module_dir + '/' + module + '/admin/' + page + '.php';
+	var content = module_dir + '/' + module + '/admin/' + page + '.php';	
 	
 	$.ajax({
 		url : content,

@@ -435,7 +435,7 @@ class Contact
 				break;
 		}
 		
-		$address = str_replace(' ','+',$this->street.' '.$this->city.', '.$this->street.' '.$this->zip);
+		$address = str_replace(' ','+',$this->street.' '.$this->city.', '.$this->state.' '.$this->zip);
 		
 		return '<iframe width="'.$width.'" height="'.$height.'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'.$http.'/maps?f=q&source=s_q&hl='.$lan.'&q='.$address.'&z=15&output=embed"></iframe>';
 	}
