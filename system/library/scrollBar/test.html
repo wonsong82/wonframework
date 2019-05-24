@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+
+<link rel="stylesheet" type="text/css" href="jScrollPane.css" />
+<style>
+/* Stylesheet for my demo pages for jScrollPane - these styles aren't necessary for using jScrollPane and aren't specific to any particular example */
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 80%;
+}
+
+a.jScrollArrowUp {
+	background: url(../images/basic_arrow_up.gif) repeat-x 0 0;
+}
+a.jScrollArrowUp:hover {
+	background-position: 0 -15px;
+}
+a.jScrollArrowDown {
+	background: url(../images/basic_arrow_down.gif) repeat-x 0 0;
+}
+a.jScrollArrowDown:hover {
+	background-position: 0 -15px;
+}
+a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
+	background-position: 0 -30px;
+}
+
+
+.orange-bar .jScrollPaneTrack {
+	background: #f60;
+}
+.orange-bar .jScrollPaneDrag {
+	background: #00f url(../images/drag_grab.gif) no-repeat 50% 50%;
+}
+.orange-bar .scroll-pane {
+	background: #69f;
+}
+			
+.holder {
+	float: left;
+	margin: 10px;
+}
+
+.scroll-pane {
+	width: 200px;
+	height: 200px;
+	overflow: auto;
+	background: #ccc;
+	float: left;
+}
+
+.wide {
+	width: 400px;
+}
+
+.super-wide {
+	width: 700px;
+}
+
+.tall {
+	height: 400px;
+}
+
+#pane1 {
+}
+#pane2 {
+	height: 150px;
+}
+#pane3 {
+	height: 190px;
+}
+#pane4 {
+	height: 190px;
+}
+</style>
+<script src="jquery-1.7.1.min.js"></script>
+<script src="jquery.em.js"></script>
+<script src="jquery.mousewheel.js"></script>
+<script src="jScrollPane.js"></script>
+<script>
+$(function()
+			{
+				// this initialises the demo scollpanes on the page.
+				$('#pane1').jScrollPane();
+
+				reinitialiseScrollPane = function()
+				{
+					$('#pane1').jScrollPane();
+				}
+
+				$('#add-content').bind(
+					'click',
+					function()
+					{
+						$('#pane1').load('lipsum.html', '', reinitialiseScrollPane);
+					}
+				);
+				// and this allows you to click the link to reduce the amount of content in
+				// #pane1 and reinitialise the scrollbars.
+				$('#remove-content').bind(
+					'click',
+					function()
+					{
+						$('#pane1').empty().append($('<p>Nothing to see here</p>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+					}
+				);
+			});
+</script>
+</head>
+
+<body>
+
+<h1>jScrollPane</h1>
+		<h2>Ajax example</h2>
+		<p id="intro">
+			This simple example shows how you can load content into a <a href="jScrollPane.html">jScrollPane</a> via AJAX and reinitialise the jScrollPane so it displays scrollbars in the correct place. The important thing to note is that I use the callback parameter of the load function to call a method which reinitialises the scroll pane.
+		</p>
+		
+		<div class="holder">
+			<h3>#pane1</h3>
+			<div id="pane1" class="scroll-pane">
+				<p>No content yet!</p>
+			</div>
+		</div>
+		<p style="clear: left;">
+			You can load the ajax content by clicking <a href="javascript:;" id="add-content">here</a>. If you want to remove it again then just click <a href="javascript:;" id="remove-content">here</a>. View source to see how it works.
+		</p>
+	</body>
+
+
+</body>
+</html>

@@ -1,41 +1,38 @@
 <?php
+// Name : Registry
+// Desc : Registry of the App.
+namespace app\engine;
 final class Registry {
 	
 	private $data = array();
 	
-	public function __get($class) {
-		
-		// if already initiated, return (initiate once and no more)
-		if (isset($this->data[$class])) {
-			return $this->data[$class];
+	//
+	// Constructor
+	//
+	public function __construct(){
+		$this->data['loader'] = new Loader($this);
+	}
+	
+	//
+	// Register Engines and Modules for quick access and singletron.
+	//
+	public function __get($name){
+		if (isset($this->data[$name])){
+			return $this->data[$name];
 		}
-		
+		elseif (false !== $instance = $this->loader->getEngine($name)){
+			$this->data[$name] = $instance;
+			return $instance;
+		}
+		elseif (false !== $instance = $this->loader->getModule($name)){
+			$this->data[$name] = $instance;
+			return $instance;
+		}
 		else {
-			
-			$className = ucwords($class);
-			
-			// if start engine,			
-			if (class_exists($className)) {				
-				$this->data[$class] = new $className($this);
-				return $this->data[$class];
-			}		
-			
-			// if module
-			elseif (file_exists($this->config->moduleDir.$class.'/controller.php')) {
-				require_once $this->config->moduleDir.$class.'/controller.php';
-				
-				$className .= 'Controller';
-				$this->data[$class] = new $className($this);
-				return $this->data[$class];
-			}
-			
-			// error
-			else {
-				trigger_error ('cannot load '.$class);
-				exit();
-			}
+			trigger_error(__CLASS__ . ': Cannot get "' . $name . '"');
+			return false;			
 		}
-	}		
+	}
 }
 
 ?>

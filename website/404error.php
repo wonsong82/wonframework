@@ -1,5 +1,1 @@
-<pre>
-<?php
-$this->user;
-?>
-</pre>
+404error.php

@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<script src="../../library/jquery/jquery-1.7.1.min.js"></script>
+
+</head>
+<body>
+<input type="file" id="files" multiple /><br/>
+<output id="list"></output>
+<div id="chunk"></div>
+
+<script>
+// Check for the API support && Wont work on IE9
+if(window.File && window.FileReader && window.FileList && window.Blob){
+	
+$(function(){
+	$('#files').change(function(){
+		
+		var files = $(this)[0].files;
+		// or var files=$(this).prop("files");
+		
+			
+		$.each(files, function(i,file){
+			$('#list').append(file.name + ' ' + file.type+' '+file.size+'<br/>');
+			
+			if(!file.type.match('image.*')){
+				return; // as Continue
+			}
+			
+			var reader = new FileReader();
+			reader.onloadend = function(e){
+				if(e.target.readyState==FileReader.DONE){
+					var data = e.target.result;
+					$('#chunk').html(data);
+				}				
+			};
+			
+			var blob = file.slice(0, file.size-1); // Start 0, file.size-1	
+			reader.readAsBinaryString(blob);
+			
+			
+		});
+	});
+});
+	
+}
+
+else{ // Alternative Uploader for IE
+	alert("NO SUPPORT");
+}
+
+
+</script>
+</body>
+</html>

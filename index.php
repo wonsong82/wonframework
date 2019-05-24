@@ -1,36 +1,42 @@
 <?php
-// Version : 3.0
-set_time_limit(0);
+// Version : 4.0
+// Load the Initializer
+require_once dirname(__FILE__).'/initialize.php';
 
+$reg->template->render();
 
-// Install
-if (!file_exists(dirname(__FILE__).'/config.php')) {
-	header('location:install');
-	exit();
-}
+$reg->user;
+//include $reg->config->moduleDir.'user/model.php';
+//$m = new \app\module\UserModel($reg);
 
-// Load Engines
-foreach (glob(dirname(__FILE__).'/system/engine/*.php') as $startEngine) {
-	require_once $startEngine;
-}
+//$reg->url->updateDB();
 
-// Start the Registry
-$registry = new Registry();
+//$reg->template->render();
 
-// Load Config
-require_once dirname(__FILE__).'/config.php';
+/*
+include $reg->config->moduleDir.'url/model.php';
+$m = new \app\module\UrlModel($reg);
+$m->updateDB();
+*/
 
+/*
+$b=$m->query("INSERT INTO [url] SET [url.uri]='aaa', [url.template]='aaa.php'");
 
-// Initialize
-date_default_timezone_set($registry->config->timezone); // Set Timezone
+$b=$m->query("
+	SELECT [url.id] AS [id], [url.uri] AS [uri], [url.template] AS [template] FROM [url]
+");
 
-$registry->lib->import('helper.magicQuotesFix'); // Run Fixes
-$registry->lib->import('helper.registerGlobalsFix'); //
+var_dump($b);
+*/
+//$model = new \app\module\LangsModel($reg);
+//$model->updateDB();
+//$model->select();
+//$model->updateDatabase();
+//$model->select(1,2,3);
 
-$registry->session->start(); // Start the Session
-
-$registry->db;
 
 // Output the Http Response
-$registry->template->output();
+//$registry->template->output();
+
+
 ?>

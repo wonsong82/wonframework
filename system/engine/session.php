@@ -1,4 +1,5 @@
 <?php
+namespace app\engine;
 final class Session {
 	
 	public $data = array();

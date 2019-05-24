@@ -1,0 +1,1 @@
+<? $this->admin->renderPage();?>

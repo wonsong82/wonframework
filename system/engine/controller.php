@@ -1,68 +1,170 @@
 <?php
-abstract class Controller {
+namespace app\engine;
+class Controller{
+
+	protected $registry;
+	public $model; // Model of this Module
+	public $name; // Module Name
 	
-	protected $reg;
-	protected $extensions = array();
+	public $langText;
 	
-	public $errorMsg;
-	public $errorCode;
-	public $model;	
-	
-	public function __construct($reg) {
-		
-		$this->reg = $reg;
-		
-		$module = lcfirst(str_replace('Controller','',get_class($this)));
-		$this->model = $this->loader->loadModel($module);		
-				
-		$this->extensions = $this->loader->loadExtensions($module, $this->model);
-		
-		if (method_exists($this, 'init'))				
-			$this->init();
-													
-	}
-	
-	protected function setError($errorCode) {
-		
-		$this->errorCode = $errorCode;
-		$this->errorMsg = $this->model->getError($errorCode);
-	}
-	
-		
-	// Display Help of Class Properties & Methods List
-	public function help() {
-		
-		$classes = array($this);
-		foreach ($this->extensions as $ext) {
-			$classes[] = $ext['controller'];
+	//
+	// Constructor
+	public function __construct($registry){
+		$this->registry = $registry;				
+		$module = lcfirst(str_replace('Controller','',
+			str_replace('app\\module\\','',get_class($this))));
+		$this->name = $module;
+		//Load the Model
+		$modelFile = $this->config->moduleDir. $module . '/model.php';
+		$modelClass = '\\app\\module\\' . ucfirst($module) . 'Model';
+		if(!class_exists($modelClass) && file_exists($modelFile)){
+			require_once $modelFile;
+			$this->model = new $modelClass($registry);
 		}
-		
-		$this->lib->import('doc.classDoc');
-		$module = $this->lib->classDoc->classInfo($classes);
-		echo '<pre>'.$module.'</pre>';
-		
-		
-	}	
-	
-	
-	public function __get($class) {
-		
-		return $this->reg->$class;
+		if($this->config->isAdmin){
+			$this->updateDB();	
+		}
+		//Load the Language Text File
+		$this->loadTexts();		
 	}
 	
-	public function __call($method, $args) {
-		
-		foreach ($this->extensions as $ext) {
-			if (method_exists($ext['controller'], $method)) {
-				return call_user_func_array(array($ext['controller'], $method), $args);				
+	//
+	// Returns the text from lang file by current language
+	public function getText($key){
+		return isset($this->langText[$key])? $this->langText[$key]:$key;
+	}
+	
+	//
+	// Load the current language file into this object
+	public function loadTexts(){
+		$curLangFile = $this->lang->lang . '.php';
+		$defaultLangFile = $this->lang->defaultLang . '.php';
+		$curLangFile = $this->config->moduleDir . $this->name . '/lang/' . $curLangFile;
+		$defaultLangFile = $this->config->moduleDir . $this->name . '/lang/' . $defaultLangFile;
+		$langFile = null;		
+		if(file_exists($curLangFile)){
+			$langFile = $curLangFile;
+		} 
+		elseif(file_exists($defaultLangFile)){
+			$langFile = $defaultLangFile;
+		}
+		$this->langText = array();
+		if (!is_null($langFile) && filesize($langFile)!=0){
+			$f=fopen($langFile,'r');
+			$lang=fread($f, filesize($langFile));
+			fclose($f);
+			$langsImploded=explode("\n",$lang);
+			foreach($langsImploded as $row){
+				if(trim($row)!='' && strstr(trim($row),'==>')){
+					$arr=explode('==>',trim($row));
+					$this->langText[trim($arr[0])] = trim($arr[1]);
+				}
 			}
 		}
-		
-		trigger_error('Call to undefined method '. $method);
 	}
 	
-	public function printr($array) {
-		echo '<pre>';print_r($array);echo '</pre>';
+	//
+	// Returns the last error occured
+	public function lastError(){
+		return isset($this->error)? $this->getText($this->error):'';
+		
 	}
+	
+	public function updateDB(){
+		$this->model->updateDB();
+	}
+	
+	//
+	// Get objects from Registry
+	public function __get($name){
+		return $this->registry->$name;
+	}
+	
+	// Update Sort Order of the table with the ids provided,
+	// incrementing order startin from $start
+	// The field must have 'order' field
+	public function updateOrder($table, $ids, $start=0){
+		$ids = explode(',',$ids);
+		$to = count($ids) + $start;
+		$success=true;
+		for($i=$start; $i<$to; $i++){
+			$result = $this->model->query("
+				UPDATE [{$table}]
+				SET [order] = {$i}
+				WHERE [{$table}.id] = {$ids[$i]} 
+			");
+			
+			if($result==false)
+				$success=false;
+		}
+		if(!$success){
+			$this->error = "Update Order Error";
+			return false;
+		}
+		return true;
+	}
+	
+	public function nextOrder($table){
+		$table=$this->db->escape($table);
+		$result = $this->model->query("
+			SELECT MAX([order]) AS [max] FROM [{$table}]
+		");
+		if(false===$result){
+			$this->error = 'Invalid Table Name';
+			return false;
+		}
+		return count($result)? ((int)$result[0]['max'])+1: 0;
+	}
+	
+	public function select($field, $id){
+		// values
+		$id = (int)$this->db->escape($id);
+		
+		// Update
+		$table = preg_replace('#\.[a-zA-Z]+$#', '', $field);
+		$result= $this->model->query("
+			SELECT [{$field}] AS [f]
+			FROM [{$table}]
+			WHERE [{$table}.id] = {$id}
+		");
+		if(count($result)>0)
+			return $result[0]['f'];	
+		if($result===false){
+			return false;
+		}
+	}
+	
+	// Update Individual Fields
+	public function update($field, $id, $val){
+		
+		// Validate
+		if(!$this->model->field($field)->validate($val)){
+			$this->error = 'Update Error';
+			return false;
+		}
+		
+		// values
+		$id = (int)$this->db->escape($id);
+		if(is_bool($val)) $val = (int)$val;
+		$val = $this->db->escape($val);		
+		
+		// Update
+		$table = preg_replace('#\.[a-zA-Z-_]+$#', '', $field);
+		$result = $this->model->query("
+			UPDATE [{$table}]
+			SET [{$field}] = '{$val}'
+			WHERE [{$table}.id] = {$id}
+		");		
+		
+		if(false===$result){
+			$this->error = $this->db->lastError();
+			return false;
+		}
+		
+		return true;	
+	}
+	
+	
 }
 ?>

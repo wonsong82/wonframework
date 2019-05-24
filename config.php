@@ -1,30 +1,31 @@
 <?php
-// Set Dirs
-$registry->config->site			= 'http://www.won.com/webwon/src3.0/';
-$registry->config->adminPage	= 'admin/';
-$registry->config->admin		= 'http://www.won.com/webwon/src3.0/admin/';
-$registry->config->content		= 'http://www.won.com/webwon/src3.0/website/';
-$registry->config->adminContent	= 'http://www.won.com/webwon/src3.0/website_admin/';
-$registry->config->module		= 'http://www.won.com/webwon/src3.0/system/module/';
-$registry->config->library		= 'http://www.won.com/webwon/src3.0/system/library/';
-$registry->config->script		= 'http://www.won.com/webwon/src3.0/system/script/';
-$registry->config->siteDir		= 'F:/Websites/webwon/src3.0/';
-$registry->config->contentDir	= 'F:/Websites/webwon/src3.0/website/';
-$registry->config->adminContentDir = 'F:/Websites/webwon/src3.0/website_admin/';
-$registry->config->moduleDir	= 'F:/Websites/webwon/src3.0/system/module/';
-$registry->config->libraryDir	= 'F:/Websites/webwon/src3.0/system/library/';
-$registry->config->helperDir	= 'F:/Websites/webwon/src3.0/system/helper/';
-$registry->config->scriptDir	= 'F:/Websites/webwon/src3.0/system/script/';
+// Set the Common Used Configs
+$reg->config->site			= 'http://www.won.com/webwon/src4.0/';
+$reg->config->content		= 'http://www.won.com/webwon/src4.0/website/';
+$reg->config->admin			= 'http://www.won.com/webwon/src4.0/admin/';
+$reg->config->adminContent	= 'http://www.won.com/webwon/src4.0/website_admin/';
+$reg->config->adminUri		= 'admin/';
+$reg->config->module		= 'http://www.won.com/webwon/src4.0/system/module/';
+$reg->config->package		= 'http://www.won.com/webwon/src4.0/system/com.won/';
+$reg->config->library		= 'http://www.won.com/webwon/src4.0/system/library/';
+$reg->config->siteDir		= 'F:\Websites\webwon\src4.0/';
+$reg->config->contentDir	= 'F:\Websites\webwon\src4.0/website/';
+$reg->config->adminDir		= 'F:\Websites\webwon\src4.0/website_admin/';
+$reg->config->moduleDir		= 'F:\Websites\webwon\src4.0/system/module/';
+$reg->config->packageDir	= 'F:\Websites\webwon\src4.0/system/com.won/';
+$reg->config->libraryDir	= 'F:\Websites\webwon\src4.0/system/library/';
+$reg->config->upload		= 'http://www.won.com/webwon/src4.0/website/uploads/';
+$reg->config->uploadDir		= 'F:\Websites\webwon\src4.0/website/uploads/';
 
-$registry->config->timezone		= 'US/Eastern';
-$registry->config->dbHost		= 'localhost';
-$registry->config->dbUser		= 'root';
-$registry->config->dbPass		= '777';
-$registry->config->dbDb			= 'webwon';
-$registry->config->dbPrefix		= 'won_';
+$reg->config->dbHost		= 'localhost';
+$reg->config->dbUser		= 'root';
+$reg->config->dbPass		= '777';
+$reg->config->dbDb			= 'webwon';
 
-$registry->config->charset		= 'utf8';
-$registry->config->collate		= 'utf8_general_ci';
+$reg->config->timezone		= 'US/Eastern';
 
-$registry->config->loaded		= true;
+$reg->config->charset		= 'utf8';
+$reg->config->collate		= 'utf8_general_ci';
+
+$reg->config->loaded		= true;
 ?>

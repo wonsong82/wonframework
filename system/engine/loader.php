@@ -1,44 +1,99 @@
 <?php
-final class Loader {
+// Name : Loader
+// Desc : Loads Internal & External Assets into the App
+namespace app\engine;
+final class Loader{
 	
-	private $reg;
+	private $registry;
+	private $engineNS	= '\\app\\engine\\';
+	private $moduleNS	= '\\app\module\\';
+	private $packageNS	= '\\com\\won\\'; 
+	private $css = array();
+	private $js = array();
 	
-	public function __construct($registry) {
+	//
+	// Entry, register Registry
+	//
+	public function __construct($registry){
+		$this->registry = $registry;
+	}
 		
-		$this->reg = $registry;
+	//
+	// The engines should be preincluded, 
+	// returns new instance of the engine, otherwise false 
+	//	
+	public function getEngine($engineName){
+		$engineClass = $this->engineNS . ucwords($engineName);
+		return class_exists($engineClass)?
+			new $engineClass($this->registry) : false;	
 	}
 	
 	
-	public function loadModel($moduleName) {
-		
-		if (!class_exists(ucfirst($moduleName.'Model')) && 
-			file_exists($this->reg->config->moduleDir.$moduleName.'/model.php')) {
-			require $this->reg->config->moduleDir.$moduleName.'/model.php';
-			$model = ucfirst($moduleName.'Model');
-			return new $model($this->reg);
-		}			
+	//
+	// Returns a new instance of the Module Controller,
+	// Otherwise return false
+	//
+	public function getModule($moduleName){
+		$moduleControllerFile = $this->registry->config->moduleDir . $moduleName . '/controller.php';
+		$moduleControllerClass = $this->moduleNS . ucwords($moduleName) . 'Controller';
+		if (file_exists($moduleControllerFile)) {
+			require_once $moduleControllerFile;
+			return new $moduleControllerClass($this->registry);
+		}
+		else
+			return false;
 	}
 	
-	public function loadExtensions($moduleName, $modelInstance) {
+	// 
+	// Import and return a new instance of External Class within com.won Package
+	// Pass args after packagePath if theres any
+	// Multiple instance of this is allowed
+	//
+	public function getClass($packagePath, $args=null){
+		$classFile = $this->registry->config->packageDir . str_replace('.','/',$packagePath) . '.php';
+		$class = $this->packageNS . str_replace('.', '\\', $packagePath);
+		if(!class_exists($class)) require $classFile;
+		$refClass = new \ReflectionClass($class);
+		return $refClass->newInstanceArgs(array_splice(func_get_args(),1));
+	}
+	
+	//
+	// Add the Library 
+	// Add the Library composed with JS, CSS, and its Requirements
+	// Load the Library If its not loaded yet.
+	public function getLib($path){
+		$req=array();
+		$css=array();
+		$js=array();
+		$data='';
+		$info=$this->registry->config->libraryDir . str_replace('.','/',$path).'/info.php';
+		$path=$this->registry->config->library . str_replace('.','/',$path);
 		
-		$exts = array();
-		foreach (glob($this->reg->config->moduleDir.$moduleName.'/extension/*', GLOB_ONLYDIR) as $extDir) {
-			if (!preg_match('#_disabled$#', basename($extDir))) {
-				require $extDir.'/model.php';
-				require $extDir.'/controller.php';
-				$model = ucfirst(basename($extDir)).'Model';
-				$controller = ucfirst(basename($extDir)).'Controller';
-				$modelExt = new $model($this->reg, $modelInstance);
-				$controllerExt = new $controller($this->reg, $modelExt);
-				
-				$exts[] = array(
-					'controller'=> $controllerExt ,
-					'model' => $modelExt
-				);
+		if(!file_exists($info)){
+			trigger_error("cannot locate info file from ".$path);
+			return false;
+		}
+		require $info;
+		foreach($req as $r)
+			$data.=$this->getLib($r);
+		
+		foreach($css as $id=>$href){
+			if(!in_array($id,$this->css)){
+				$this->css[]=$id;
+				$data.='<link rel="stylesheet" type="text/css" href="'.$path.'/'.$href.'"/>'."\n";
 			}
 		}
-		return $exts;
-	}
+				
+		foreach($js as $id=>$src){
+			if(!in_array($id,$this->js)){
+				$this->js[]=$id;
+				$data.='<script type="text/javascript" src="'.$path.'/'.$src.'"></script>'."\n";		
+			}
+		}
+		
+		return $data;
+	}	
+	
 	
 }
 ?>
