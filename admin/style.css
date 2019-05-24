@@ -1,0 +1,129 @@
+/* CSS Document */
+* {
+	margin:0;
+	padding:0;
+	font-family:arial;
+	font-size:12px;
+	line-height:16px;
+	list-style:none;
+	text-decoration:none;
+	color:#888;	
+}
+a {
+	color:#09F;
+}
+a:hover {
+	
+	background:#eee;
+}
+.error {
+	color:#f00;
+}
+.alert {
+	background:url(images/alert-16x16.png) 0 0 no-repeat;
+	text-indent: 20px;
+	color:#F80;
+}
+
+
+#header{
+	text-align:right;
+	width:100%;	
+	background:#e5e5e5;
+	border-bottom:1px solid #d3d3d3;
+}
+#brand {
+	float:left;
+	display:inline;
+	margin:5px;
+	font-weight:bold;
+}
+#greet {	
+	text-align:right;
+	display:inline-block;
+	height:20px;
+	margin:5px;
+}
+
+#nav ul {
+	width:100%;
+	text-align:center;
+	
+}
+#nav ul li{
+	display:inline-block;
+	padding:8px 0px;
+	margin-left:-1px;
+}
+#nav a {
+	font-size:12px;
+	padding:2px 5px;
+	border:1px solid #d3d3d3;
+}
+#nav li:first-child a{
+	padding-left:10px;
+	border-top-left-radius:5px;
+	border-bottom-left-radius:5px;
+}
+#nav li:last-child a{
+	border-top-right-radius:5px;
+	border-bottom-right-radius:5px;
+	padding-right:10px;
+}
+#content {
+	margin:20px;
+}
+h1 {
+	color:#09f;
+}
+#msg {
+	margin:20px;
+}
+
+
+table {
+	padding:3px;
+}
+thead {
+	font-weight:bold;
+}
+td {
+	padding:0px;
+}
+input {
+	border:1px solid #d3d3d3;
+}
+input[type="button"], input[type="file"], input[type="submit"] {
+	color:#09F;
+	padding:0px 10px;	
+	margin-left: 5px;
+	cursor:pointer;
+	border-radius:5px;
+	background:#e5e5e5;
+}
+input[type="button"]:hover, input[type="file"]:hover, input[type="submit"]:hover {	
+	background:#eee;
+}
+table, .list {
+	background:#eee;
+	margin-top:10px;
+	border-radius:5px;
+	border:1px solid #e5e5e5;	
+}
+#add-new {
+	margin-top:10px;
+}
+input.disabled {
+	color:#aaa;
+	background:inherit;
+	cursor:default;
+}
+.help {	
+	margin-top:50px;	
+}
+.help a {
+	cursor:pointer;
+}
+.help div {
+	display:none;
+}
