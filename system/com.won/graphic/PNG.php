@@ -1,6 +1,6 @@
 <?php
-namespace com\won\graphic;
-class PNG{
+// namespace com\won\graphic;
+class com_won_graphic_PNG{
 	
 	private $imgObj; //Image Resource
 	private $path; // Image File Path

@@ -1,10 +1,11 @@
 <?php
 // Name : Template
 // Desc : All the view files will resides with in this Template Class
-namespace app\engine;
-final class Template{
+
+// namespace app\engine;
+final class app_engine_Template{
 	
-	private $registry;
+	private $reg;
 	private $headers = array();
 	private $css = array();
 	private $js = array();
@@ -15,8 +16,8 @@ final class Template{
 	
 	//
 	// Constructor
-	public function __construct($registry){
-		$this->registry = $registry;
+	public function __construct($reg){
+		$this->reg = $reg;
 		$this->headers[] = 'Content-Type: text/html; charset=' . $this->charset;
 	}
 	
@@ -24,7 +25,7 @@ final class Template{
 	//u
 	// For the access of Engines & Modules from Views
 	public function __get($name){
-		return $this->registry->$name;
+		return $this->reg->$name;
 	}
 	
 	
@@ -55,10 +56,20 @@ final class Template{
 	public function load($part){
 		$specificPart = $this->config->contentDir. 'parts/'.$part.'.'.basename($this->url->template);
 		$defaultPart = $this->config->contentDir. 'parts/'.$part.'.default.php';
-		if(file_exists($specificPart))
+		if(file_exists($specificPart)){
+			ob_start();
 			include $specificPart;
-		elseif(file_exists($defaultPart))
+			$s = ob_get_contents();
+			ob_end_clean();
+			return $s;
+		}
+		elseif(file_exists($defaultPart)){
+			ob_start();
 			include $defaultPart;
+			$s = ob_get_contents();
+			ob_end_clean();
+			return $s;
+		}
 		else
 			return false;
 	}

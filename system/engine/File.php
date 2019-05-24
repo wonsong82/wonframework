@@ -1,24 +1,25 @@
 <?php
 // Name : File
 // Desc : File
-namespace app\engine;
-final class File {
+
+// namespace app\engine;
+final class app_engine_File {
 	
 	
-	private $registry;
+	private $reg;
 	private $error;
 	
 	//
 	// Constructor
-	public function __construct($registry){
-		$this->registry = $registry;
+	public function __construct($reg){
+		$this->reg = $reg;
 		$this->error = '';
 	}
 	
 	//
 	// For the access of Engines & Modules from Views
 	public function __get($name){
-		return $this->registry->$name;
+		return $this->reg->$name;
 	}
 	
 	//

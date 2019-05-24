@@ -27,14 +27,19 @@ $(function(){
 	if($order!=''):
 		$param=explode(',',$order);
 		$module=$param[0];
-		$table=$param[1];
+		$table=$param[1];		
 	?>
+	
 	$("#<?=$id?> tbody").sortable({
 		"update":function(e,ui){
 			var ids=[];
 			$(">tr",e.target).each(function(){
 				ids.push($(this).attr("rowid"));
 			});
+			<? if($reverse): ?>
+			ids.reverse();
+			<? endif;?>
+			
 			ids=ids.join(",");
 			var lt=$(this).closest(".page").find(".load");
 			var l=$("<div></div>").addClass("loading");
@@ -59,4 +64,5 @@ $(function(){
 	});	
 	<? endif;?>	
 });
+
 </script>

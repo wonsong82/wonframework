@@ -1,8 +1,9 @@
 <?php
-namespace app\engine\datatype;
 // Name : DataType Interface
 // Desc : Predefined Datatypes for MySQL and Others
-class DataType{
+
+// namespace app\engine\datatype;
+class app_engine_datatype_DataType{
 	
 	// Common Variables
 	protected $title; // Title of the Field
@@ -14,12 +15,12 @@ class DataType{
 	protected $regex; // Regex for Input
 	protected $key; // Defined Keys for MYSQL Data
 	protected $default = null;
-	protected $registry;
+	protected $reg;
 	
-	public function __construct($name, $registry){
+	public function __construct($name, $reg){
 		$this->name = $name;
-		$this->registry = $registry;
-		$this->type = str_replace('app\\engine\\datatype\\','',strtolower(get_class($this)));		
+		$this->reg = $reg;	
+		$this->type = str_replace( $this->reg->ns['datatype'], '', strtolower(get_class($this)));		
 	}
 	
 	public function __set($key, $val){
@@ -32,9 +33,7 @@ class DataType{
 	
 	public function validate($val){
 		if(is_bool($val)) $val=(int)$val;
-		if($this->regex===false){ // For some unknown error for textarea
-			return true;
-		}
+		if(false===$this->regex) return true;
 		return preg_match($this->regex, $val);
 	}
 	
@@ -42,8 +41,8 @@ class DataType{
 	// Default: return null so the values won be changed;
 	// Other Langs: change name and return this
 	public function lang($langCode){
-		if(!$this->registry->lang->isDefault && 
-			$this->registry->lang->lang == $langCode){		
+		if(!$this->reg->lang->isDefault && 
+			$this->reg->lang->lang == $langCode){		
 			$this->name .= '_'.$langCode;
 			return $this;
 		}

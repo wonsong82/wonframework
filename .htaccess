@@ -1,15 +1,15 @@
 Options +FollowSymlinks
 RewriteEngine On
-RewriteBase /webwon/src4.0/
+RewriteBase /iplazany.com/
 
 # This is for domain/index.php
 RewriteRule ^index\.php$ - [L]
 
 # This is required for passing requests properly for DBHandler
-RewriteRule ^dbmanager$ /webwon/src4.0/_db_handler/index.php [L]
-RewriteRule ^dbmanager/$ /webwon/src4.0/_db_handler/index.php [L]
+RewriteRule ^dbmanager$ /iplazany.com/_db_handler/index.php [L]
+RewriteRule ^dbmanager/$ /iplazany.com/_db_handler/index.php [L]
 
 # This redirects everything to index.php unless the file or directory exists
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /webwon/src4.0/index.php [L]
+RewriteRule . /iplazany.com/index.php [L]

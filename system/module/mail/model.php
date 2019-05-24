@@ -1,8 +1,9 @@
 <?php
 // Name : User Model
 // Desc : Controlls User Authentication and Roles
-namespace app\module;
-final class MailModel extends \app\engine\Model{
+
+// namespace app\module;
+final class app_module_MailModel extends app_engine_Model{
 	
 	//
 	// DB Structure

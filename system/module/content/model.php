@@ -1,8 +1,8 @@
 <?php
 // Name : Content Model
 // Desc : Contents From SQL
-namespace app\module;
-final class ContentModel extends \app\engine\Model{
+// namespace app\module;
+final class app_module_ContentModel extends app_engine_Model{
 	
 	//
 	// DB Structure
@@ -14,7 +14,6 @@ final class ContentModel extends \app\engine\Model{
 		$field->key = 'unique';
 		
 		$field = $this->table('content')->field('content', 'text');
-		$field->regex = false;
 		$field->length = 1000;
 		
 		$field = $field->lang('ko');

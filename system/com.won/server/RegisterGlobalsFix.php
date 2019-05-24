@@ -1,6 +1,6 @@
 <?php
-namespace com\won\server;
-final class RegisterGlobalsFix {
+// namespace com\won\server;
+final class com_won_server_RegisterGlobalsFix {
 	
 	public function __construct() {
 		if (ini_get('register_globals')) {

@@ -7,28 +7,30 @@ $out['error']=''; // If error, display error message
 $this->user->auth();
 if(!$this->user->isAdmin){
 	$out['status']='no';
-	$out['error']=$this->user->getText('UNAUTHORIZED_USER');
+	$out['error']=$this->user->getText('Unauthorized Ajax Call, Please check the user\'s permission.');
 	echo json_encode($out);
 	exit();
 }
-
-
 
 $args=isset($this->req->post['params'])? $this->req->post['params']:array();
 
 $class=$this->url->args['c'];
+$class= $this->url->args['c'];
+$class[0] = strtolower($class[0]);
+$class = $this->$class;
+
 $method=$this->url->args['m'];
-if(!@method_exists($this->$class, $method)){
+if(!@method_exists($class, $method)){
 	$out['status']='no';
-	$out['error']=$this->url->args['m'];
+	$out['error']=$this->url->args['m'].' function not exists';
 	echo json_encode($out);
 	exit();
 }
-$call = @call_user_func_array(array($this->$class, $method), $args);
 
+$call = @call_user_func_array(array($class, $method), $args);
 if(false===$call){
 	$out['status']='no';
-	$out['error']=$this->$class->lastError();
+	$out['error']=$class->lastError();
 	echo json_encode($out);
 	exit();
 }

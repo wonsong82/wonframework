@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-class UserAdmin extends \app\engine\AdminView{
+// namespace app\module;
+final class app_module_UserAdmin extends app_engine_AdminView{
 	
 	public function construct(){
 		
@@ -45,7 +45,7 @@ class UserAdmin extends \app\engine\AdminView{
 		
 		$addUserOKBtn = $this->newButton('add-user-ok-btn');
 		$addUserOKBtn->text = $this->getText('Ok');
-		$addUserOKBtn->action('user.addUser', '#username-tf,#password-tf');
+		$addUserOKBtn->action('user.addUser', '#username-tf', '#password-tf');
 		$addUserOKBtn->redirect('user.users-page');
 		$addUserPage->addChild($addUserOKBtn);
 		
@@ -71,7 +71,7 @@ class UserAdmin extends \app\engine\AdminView{
 		
 		$newPasswordBtn = $this->newButton('new-password-btn');
 		$newPasswordBtn->text = $this->getText('Update New Password');
-		$newPasswordBtn->action('user.update', 'user.password,parent.rowid,#new-password');
+		$newPasswordBtn->action('user.update', 'user.password', 'parent.rowid', '#new-password');
 		$newPasswordBtn->redirect('user.edit-user-page', 'parent.rowid');
 		$editUserPage->addChild($newPasswordBtn);
 		
@@ -83,14 +83,14 @@ class UserAdmin extends \app\engine\AdminView{
 		
 		$activeCheck = $this->newCheckBox('active');
 		$activeCheck->text = $this->getText('Active');
-		$activeCheck->action('user.update','user.active,parent.parent.rowid,#active');
+		$activeCheck->action('user.update','user.active', 'parent.parent.rowid', '#active');
 		$activeCheck->linkData($this->user->select('user.active',$this->rowid));
 		$editUserPage->addChild($activeCheck);
 		
 		$banCheck = $this->newCheckBox('banned');
 		$banCheck->text = $this->getText('Banned');
 		$banCheck->linkData($this->user->select('user.banned',$this->rowid));
-		$banCheck->action('user.update','user.banned,parent.parent.rowid,#banned');
+		$banCheck->action('user.update','user.banned', 'parent.parent.rowid', '#banned');
 		$editUserPage->addChild($banCheck);
 		
 		$editOKBtn = $this->newButton('edit-ok-btn');
@@ -112,7 +112,7 @@ class UserAdmin extends \app\engine\AdminView{
 			$groupCheck = $this->newCheckBox('group-'.$group['id']);
 			$groupCheck->text = $group['name'];
 			$groupCheck->linkData($this->user->isUserMemberOf($this->rowid,$group['id']));
-			$groupCheck->action('user.updateGroup',"{$this->rowid},{$group['id']},#group-{$group['id']}");
+			$groupCheck->action('user.updateGroup',$this->rowid, $group['id'], "#group-{$group['id']}");
 			$groupSection->addChild($groupCheck);
 		}
 		
@@ -170,7 +170,7 @@ class UserAdmin extends \app\engine\AdminView{
 		$groupNameTf = $this->newTextField('group-name-tf');
 		$groupNameTf->text = $this->getText('Group Name');
 		$groupNameTf->linkData($this->user->select('usergroup.name',$this->rowid));
-		$groupNameTf->action('user.update', 'usergroup.name,parent.parent.rowid,#group-name-tf');
+		$groupNameTf->action('user.update', 'usergroup.name' ,'parent.parent.rowid', '#group-name-tf');
 		$editGroupPage->addChild($groupNameTf);
 		
 		$editOKBtn = $this->newButton('edit-ok-btn');

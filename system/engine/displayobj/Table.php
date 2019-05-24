@@ -1,15 +1,26 @@
 <?php
-namespace app\engine\displayobj;
-class Table extends DisplayObject{
+// namespace app\engine\displayobj;
+class app_engine_displayobj_Table extends app_engine_displayobj_DisplayObject{
 	
 	public $order='';
+	public $reverseOrder = false;
 	public $rows=array();
 	
 	// Link Data, Must be Multi Array
-	public function linkData($multiArray){
+	public function linkData($multiArray, $reverse=false){
+		$this->reverseOrder = $reverse;
+		if($this->reverseOrder){
+			$newArr = array();
+			for($i=count($multiArray)-1;$i>=0;$i--){
+				$newArr[] = $multiArray[$i];
+			}
+			$multiArray = $newArr;		
+		}
+		
 		foreach($multiArray as $row){
 			require_once $this->reg->config->siteDir.'system/engine/displayobj/Row.php';
-			$rowObj = new \app\engine\displayobj\Row($row['id'], $this->reg);
+			$rowObjClass = $this->ns['displayobj'] . 'Row';
+			$rowObj = new $rowObjClass($row['id'], $this->reg);
 			foreach($row as $key=>$val){
 				if($key!='id')
 					$rowObj->addCol($key, $val);
@@ -40,6 +51,7 @@ class Table extends DisplayObject{
 	public function render(){
 		$args['rows'] = $this->rows;
 		$args['order'] = $this->order;
+		$args['reverse'] = $this->reverseOrder;
 		
 		parent::render($args);
 	}

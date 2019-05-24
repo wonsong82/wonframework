@@ -1,31 +1,33 @@
 <?php
-namespace app\module;
-final class ContentController extends \app\engine\Controller{
+// namespace app\module;
+final class app_module_ContentController extends app_engine_Controller{
 	
 	// @override
 	// Constructor
 	public function __construct($registry){
 		parent::__construct($registry);
-		/*
-		// Import Packages
-		$this->phpassObj = $this->loader->getClass('auth.PHPass');
-		$this->codeObj = $this->loader->getClass('auth.Code');
 		
-		// $sessionName is what client will use for their session and form
-		$this->sessionName = 'webwon_user';
-		$this->encodedSessionName = $this->codeObj->encrypt($this->sessionName);	
-		$this->encodedIsAdmin = $this->codeObj->encrypt('isadmin');
-		
-		$this->isAdmin = false;
-		$this->logged = false;	*/
 	}
 	
-	public function add($name){
+	public function add($name, $unameId=false){
 		if(!$this->model->field('content.name')->validate($name)){
 			$this->error = 'Invalid Name Format';
 			return false;
 		}
 		
+		if($unameId===false){
+			$name = $this->uname->uName($name);
+			$this->uname->add($name);
+		}
+		elseif((int)$unameId>0){
+			$uname = $this->uname->get($unameId);
+			$name = $uname['name'];
+		}
+		else{
+			$this->error = 'Invalid Unique Name ID';
+			return false;
+		}
+				
 		$next = $this->nextOrder('content');
 		$result = $this->model->query("
 			INSERT INTO [content]
@@ -41,6 +43,22 @@ final class ContentController extends \app\engine\Controller{
 	
 	public function remove($id){
 		$id=(int)$id;
+		
+		$result = $this->model->query("
+			SELECT [content.name] AS [name] FROM [content]
+			WHERE [content.id]={$id}
+		");
+		if(false===$result){
+			$this->error = $this->db->lastError();
+			return false;
+		}
+		if(!count($result)){
+			$this->error = 'Unexisting Content';
+			return false;
+		}
+		$name = $result[0]['name'];
+		$this->uname->remove($name);
+				
 		$result = $this->model->query("
 			DELETE FROM [content]
 			WHERE [content.id]={$id}
@@ -84,8 +102,11 @@ final class ContentController extends \app\engine\Controller{
 		if($edit) // Edit is for content editor
 			return htmlspecialchars_decode($content);
 		else{
+			ob_start();
 			eval(' ?>'.htmlspecialchars_decode($this->replaceShortkeys($content)));
-			return true;
+			$cs = ob_get_contents();
+			ob_end_clean();
+			return $cs;
 		}
 	}
 	
@@ -102,11 +123,8 @@ final class ContentController extends \app\engine\Controller{
 			$img = $this->image->getImage($id);
 			$content = str_replace($thumbs[0][$i], '<img src="'. $img['t_src']. '"/>', $content);			
 		}
-		return $content;
-		
-	}	
-
-	
+		return $content;		
+	}
 	
 	
 }

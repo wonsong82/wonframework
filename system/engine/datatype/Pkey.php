@@ -1,9 +1,9 @@
 <?php
-namespace app\engine\datatype;
-class Pkey extends Int{
+// namespace app\engine\datatype;
+class app_engine_datatype_Pkey extends app_engine_datatype_Int{
 		
-	public function __construct($name, $registry){
-		parent::__construct($name, $registry);
+	public function __construct($name, $reg){
+		parent::__construct($name, $reg);
 		$this->sqlType = 'BIGINT';
 		$this->regex = '#^[0-9]+$#';
 		$this->length = 19;

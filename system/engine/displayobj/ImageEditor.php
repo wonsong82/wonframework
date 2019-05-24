@@ -1,6 +1,6 @@
 <?php
-namespace app\engine\displayobj;
-class ImageEditor extends DisplayObject{
+// namespace app\engine\displayobj;
+class app_engine_displayobj_ImageEditor extends app_engine_displayobj_DisplayObject{
 	
 	protected $img; // Image Information
 	protected $imgData; // Image Metadata Information

@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-final class UserController extends \app\engine\Controller{
+// namespace app\module;
+final class app_module_UserController extends app_engine_Controller{
 	
 	public $logged; // bool is user logged
 	public $active; // bool is user active
@@ -17,8 +17,8 @@ final class UserController extends \app\engine\Controller{
 		
 	// @override
 	// Constructor
-	public function __construct($registry){
-		parent::__construct($registry);
+	public function __construct($reg){
+		parent::__construct($reg);
 		
 		// Import Packages
 		$this->phpassObj = $this->loader->getClass('auth.PHPass');

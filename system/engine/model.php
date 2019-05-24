@@ -1,30 +1,36 @@
 <?php
 // Name : Model
 // Desc : Model
-namespace app\engine;
-class Model{
+
+// namespace app\engine;
+class app_engine_Model{
 	
-	protected $registry;
+	protected $reg;
 	protected $moduleName;
 	protected $tables;
 		
-	public function __construct($registry){
-		$this->registry = $registry;
-		$this->moduleName = strtolower(str_replace('Model','',get_class($this)));
+	public function __construct($reg){
+		$this->reg = $reg;
+		
+		$moduleName = str_replace('Model', '', str_replace($this->reg->ns['module'], '', get_class($this)));
+		$moduleName[0] = strtolower($moduleName[0]);
+		$this->moduleName = $moduleName;
+		
 		$this->tables = array();	
 	}
 	
 	//
 	// To Access Engines & Modules
 	public function __get($name){
-		return $this->registry->$name;
+		return $this->reg->$name;
 	}	
 	
 	//
 	// Add Table, Initiate Table Class with default values
 	public function table($tableName){
 		if(!isset($this->tables[$tableName])){
-			$this->tables[$tableName] = new \app\engine\datatype\Table($tableName, $this->registry);
+			$tableClass = $this->reg->ns['datatype'] . 'Table';			
+			$this->tables[$tableName] = new $tableClass($tableName, $this->reg);
 			$this->tables[$tableName]->charset = $this->config->charset;
 			$this->tables[$tableName]->collate = $this->config->collate;
 		}
@@ -96,16 +102,20 @@ class Model{
 	//
 	// 
 	public function query($query){
-		if(preg_match_all('#\[([a-zA-Z-_]+?)(\.[a-zA-Z-_]+?)\]#',$query,$matches)){
-			$query = preg_replace('#\[|\]#','`',$query);
+		// Look for matches of [table.field] from query
+		if(preg_match_all('#\[([a-zA-Z-_]+?)\.([a-zA-Z-_]+?)\]#',$query,$matches)){			
 			for($i=0;$i<count($matches[0]);$i++){
-				$replace=$matches[2][$i]=='.id'?'id':$this->field($matches[1][$i].$matches[2][$i])->name;
-				$query = str_replace($matches[2][$i], '`.`'.$replace, $query);												
+				$from = $matches[0][$i]; // [table.field]
+				$table = $matches[1][$i]; // table
+				$field = $matches[2][$i]; // field
+				$field = $field=='id' ? 'id' : $this->field($table.'.'.$field)->name; // field_ko
+				$to = "`{$table}`.`{$field}`";
+				$query = str_replace($from, $to, $query);												
 			}
+			
+		// If none found or only found [table], or [field]	
 		}
-		else {
-			$query = preg_replace('#\[|\]#','`',$query);			
-		}
+		$query = preg_replace('#\[|\]#','`',$query);	
 		
 		$result = $this->db->query($query);
 		return $result; // false on errors, true on no return queries, array on select
@@ -115,28 +125,4 @@ class Model{
 	
 	
 }
-/*
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
 ?>

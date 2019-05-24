@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-class UrlAdmin extends \app\engine\AdminView{
+// namespace app\module;
+class app_module_UrlAdmin extends app_engine_AdminView{
 	
 	public function construct(){
 		
@@ -46,7 +46,7 @@ class UrlAdmin extends \app\engine\AdminView{
 		
 		$addOKBtn = $this->newButton('add-uri-ok-btn');
 		$addOKBtn->text = $this->getText('Ok');
-		$addOKBtn->action('url.add', '#uri-tf,#template-tf');
+		$addOKBtn->action('url.add', '#uri-tf', '#template-tf');
 		$addOKBtn->redirect('url.uris-page');
 		$addPage->addChild($addOKBtn);
 		
@@ -59,14 +59,14 @@ class UrlAdmin extends \app\engine\AdminView{
 		$editUriTF->text = $this->getText('URI');
 		$editUriTF->linkData($this->url->select('url.uri',$this->rowid));
 		$editUriTF->desc = $this->getText('URI Desc');
-		$editUriTF->action('url.update','url.uri,'.$this->rowid.',#edit-uri-tf');
+		$editUriTF->action('url.update','url.uri', $this->rowid, '#edit-uri-tf');
 		$editPage->addChild($editUriTF);
 		
 		$editTempTF = $this->newTextField('edit-template-tf');
 		$editTempTF->text = $this->getText('Template');
 		$editTempTF->linkData($this->url->select('url.template',$this->rowid));
 		$editTempTF->desc = $this->getText('Template Desc');
-		$editTempTF->action('url.update','url.template,'.$this->rowid.',#edit-template-tf');
+		$editTempTF->action('url.update','url.template', $this->rowid, '#edit-template-tf');
 		$editPage->addChild($editTempTF);
 				
 		$editOKBtn = $this->newButton('edit-ok-btn');

@@ -1,6 +1,8 @@
 <?php
-namespace com\won\web;
-class Url {
+// namespace com\won\web;
+class com_won_web_Url {
+	
+	public function __construct(){}
 	
 	//Parse URL Information from $_SERVER
 	public function getUrlFromRequest() {

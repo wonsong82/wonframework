@@ -1,26 +1,28 @@
 <?php
 // Name : Admin
 // Desc : All about admin controls
-namespace app\engine;
-final class Admin{
-	
-	private $registry;
-	private $menus;
-	private $submenus;
+
+// namespace app\engine;
+final class app_engine_Admin{
+		
 	public $menu;
 	public $file = null;
 	public $adminObj = null;
 	public $isStatic = false;
 	
-	public function __construct($registry){
-		$this->registry = $registry;
+	private $reg;
+	private $menus;
+	private $submenus;
+		
+	public function __construct($reg){
+		$this->reg = $reg;
 		$this->menus = array();
 		$this->submenus = array();
 		$this->menu = $this->url->args['menu'];		
 	}
 	
 	public function __get($name){
-		return $this->registry->$name;
+		return $this->reg->$name;
 	}
 	
 	public function addMenu($module, $displayName, $permissions){
@@ -68,8 +70,11 @@ final class Admin{
 		if(file_exists($this->config->moduleDir.$this->menu.'/admin.php')){
 			$this->file = $this->config->moduleDir.$this->menu.'/admin.php';
 			require $this->file;
-			$adminClassName = '\\app\\module\\'.ucwords($this->menu).'Admin';
-			$this->adminObj = new $adminClassName($this->registry);
+			
+			$adminClassName = $this->menu;
+			$adminClassName[0] = strtoupper($adminClassName[0]);
+			$adminClassName = $this->reg->ns['module'] . $adminClassName . 'Admin';
+			$this->adminObj = new $adminClassName($this->reg);
 			$this->submenus = $this->adminObj->getSubmenus();
 		}
 		return true;

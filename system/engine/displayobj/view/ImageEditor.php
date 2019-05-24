@@ -1,5 +1,7 @@
 <div class="image-editor">
-	<p>Image Shortcut Key : <?=$text?></p>
+	<? if($text):?>
+    	<p>Image Shortcut Key : <?=$text?></p>
+    <? endif;?>
     <br/>
     
     <div class="editor">

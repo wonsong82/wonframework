@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-class UrlController extends \app\engine\Controller{
+// namespace app\module;
+final class app_module_UrlController extends app_engine_Controller{
 	
 	public $url;
 	public $uri;
@@ -63,7 +63,11 @@ class UrlController extends \app\engine\Controller{
 			WHERE [url.uri] = '404error'
 		");
 		if(!count($invalid)){
+			$this->add('', 'home.php');
 			$this->add('404error', '404error.php');
+			$this->add('m/fullmode', 'home.php');
+			$this->add('m/$page', 'mobile.php');
+			
 		}
 		
 		return true;		
@@ -130,7 +134,7 @@ class UrlController extends \app\engine\Controller{
 			return false; // Validation Error
 		}
 		// Clean
-		$uri = trim($this->db->escape($uri),'/');
+		$uri = strtolower(trim($this->db->escape($uri),'/'));
 		$template = $this->db->escape($template);		
 		// Add to DB
 		$result = $this->model->query("
@@ -144,7 +148,7 @@ class UrlController extends \app\engine\Controller{
 				
 		// Make a File if not exists
 		if(!file_exists($this->config->contentDir .$template))
-			$this->fileObj->write($this->config->contentDir. $template, $template);
+			$this->loader->getClass('file.File')->write($this->config->contentDir. $template, $template);
 		
 		return true;
 	}	
@@ -173,8 +177,94 @@ class UrlController extends \app\engine\Controller{
 					[url.template] AS [template]
 			FROM [url]
 			ORDER BY [order]
+		");			
+	}
+	
+	public function getUniqueName($name){
+		$name = strtolower($this->db->escape($name)); 
+		$name = preg_replace('#[^a-z0-9-_\s\/]#s','',$name); // remove special chars
+		$name = preg_replace('#\s{2,}#',' ', $name); // one space only
+		$name = str_replace(' ','-', $name);
+		$name = rtrim($name, '/');		
+		
+		// Find Duplicates	
+		$nextName = false;	
+		$result = $this->model->query("
+			SELECT [unique_name.id] AS [id]
+			FROM [unique_name]
+			WHERE [unique_name.name] = '{$name}'
 		");
-				
+		if(false===$result){
+			$this->error = $this->db->lastError();
+			return false;
+		}		
+		
+		$i = 2;
+		while(count($result) > 0){
+			$nextName = $name . '-' . $i;
+			$result = $this->model->query("
+				SELECT [unique_name.id] AS [id]
+				FROM [unique_name]
+				WHERE [unique_name.name] = '{$nextUri}'
+			");
+			if(false===$result){
+				$this->error =$this->db->lastError();
+				return false;
+			}
+			$i++;
+		}
+		
+		return $nextName? $nextName : $name;
+	}
+	
+	public function addUniqueName($name){
+		$name = $this->getUniqueName($name);
+		$result = $this->model->query("
+			INSERT INTO [unique_name]
+			SET [unique_name.name] = '{$name}'
+		");
+		if(false===$result){
+			$this->error = $this->db->lastError();
+			return false;
+		}
+		return $name;
+	}
+	
+	public function getUniqueNameId($name){
+		$name = $this->db->escape($name);
+		$result = $this->model->query("
+			SELECT [unique_name.id] AS [id]
+			FROM [unique_name]
+			WHERE [unique_name.name] = '{$name}'
+		");
+		if(false===$result){
+			$this->db->lastError();
+			return false;
+		}
+		if(!count($result)){
+			$this->error = 'Unexisting Unique Name';
+			return false;
+		}
+		return (int)$result[0]['id'];
+	}
+	
+	public function removeUniqueName($param){
+		if((int)$param > 0){
+			$id = $this->db->escape((int)$param);
+			$where = "[unique_name.id] = {$id}";
+		} else {
+			$name = $this->db->escape($param);
+			$where = "[unique_name.name] = '{$name}'";
+		}
+		$result = $this->model->query("
+			DELETE FROM [unique_name]
+			{$where}
+		");
+		if(false===$result){
+			$this->error = $this->db->lastError();
+			return false;
+		}
+		return true;		
 	}
 }
 ?>

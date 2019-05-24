@@ -1,11 +1,9 @@
 <?php
 // Name : SimpleAuth
 // Desc : Simple ID and Password Authorizer
-namespace com\won\auth;
 
-require_once dirname(__FILE__).'/PHPass.php';
-		
-class SimpleAuth{
+//namespace com\won\auth;
+class com_won_auth_SimpleAuth{
 	
 	private $sessionName = null;
 	private $sessionNameEncoded = null;
@@ -16,10 +14,10 @@ class SimpleAuth{
 	public $errorMsg = '';
 	public $lastID = '';
 	
-	
 	public function __construct($sessionName){		
 		
-		$this->phpass = new PHPass();
+		require_once dirname(__FILE__).'/PHPass.php';
+		$this->phpass = new com_won_auth_PHPass();
 						
 		// $sessionName is what Client will user for their session and form
 		$this->sessionName = $sessionName;

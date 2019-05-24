@@ -1,6 +1,6 @@
 <?php
-namespace app\engine\displayobj;
-class Row extends DisplayObject{
+// namespace app\engine\displayobj;
+class app_engine_displayobj_Row extends app_engine_displayobj_DisplayObject{
 	public $cols;
 	
 	// @override

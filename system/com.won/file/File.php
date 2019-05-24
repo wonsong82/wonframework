@@ -1,6 +1,8 @@
 <?php
-namespace com\won\file;
-final class File {
+// namespace com\won\file;
+final class com_won_file_File {
+	
+	public function __construct(){}
 	
 	// write into the file and returns pathinfo array
 	public function write($filepath, $content, $overwrite=false) {

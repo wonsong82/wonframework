@@ -1,4 +1,4 @@
 <?php
-define('DBPASS','$2a$08$F2wDexTIIfjRcUT1ZnDr9ujzirSjQGuoE4WpgvHFeOIQB1pxG9Xaq');
+define('DBPASS','$2a$08$jQHqPKLGSKb/.CxYQmZmyerCp.ytLnxT75thGjOmYbO9t0Pk7Vhx.');
 define('DBURI','dbmanager/');
 ?>

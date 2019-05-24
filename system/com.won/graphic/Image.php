@@ -1,8 +1,9 @@
 <?php
 // Name : Image
 // Desc : Represents of a single image file
-namespace com\won\graphic;
-class Image{
+
+// namespace com\won\graphic;
+class com_won_graphic_Image{
 	
 	public $imgObj;
 	public $mimeType;
@@ -14,6 +15,7 @@ class Image{
 	// Allowed Mime Types
 	private $mimeTypes = array('gif','png','jpg');
 	
+	public function __construct(){}
 		
 	//
 	// Load Image from File Path
@@ -36,7 +38,8 @@ class Image{
 		}
 		// Import and Instantiate
 		$classFile = dirname(__FILE__) . '/' . strtoupper($this->mimeType) . '.php';
-		$class = 'com\\won\\graphic\\'.strtoupper($this->mimeType);
+		$ns = 'com_won_graphic_';
+		$class = $ns . strtoupper($this->mimeType);
 		require_once($classFile);
 		$this->imgObj = new $class($filePath);
 		// Get Properties

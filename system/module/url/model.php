@@ -1,21 +1,23 @@
 <?php
 // Name : Url Model
 // Desc : Url Model
-namespace app\module;
-final class UrlModel extends \app\engine\Model{
+
+// namespace app\module;
+final class app_module_UrlModel extends app_engine_Model{
 		
 	//
 	// DB Structure
 	public function __construct($registry){
 		parent::__construct($registry);
 		
-		$field = $this->table('url')->field('uri', 'text');
-		$field->regex = '#^[a-zA-Z0-9\/\-\_$]*$#';
-		$field->key = 'unique';
+		$f = $this->table('url')->field('uri', 'text');
+		$f->regex = '#^[a-zA-Z0-9\/\-\_$]*$#';
+		$f->key = 'unique';
 		
-		$field = $this->table('url')->field('template', 'text');
-		$field->regex = '#[a-zA-Z0-9.-_]+\.php$#';
-		$field->key = 'index';		
+		$f = $this->table('url')->field('template', 'text');
+		$f->regex = '#[a-zA-Z0-9.-_]+\.php$#';
+		$f->key = 'index';	
+		
 	}
 }
 ?>

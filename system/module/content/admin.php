@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-class ContentAdmin extends \app\engine\AdminView{
+// namespace app\module;
+class app_module_ContentAdmin extends app_engine_AdminView{
 	
 	public function construct(){
 		
@@ -69,7 +69,7 @@ class ContentAdmin extends \app\engine\AdminView{
 		
 		$okBtn = $this->newButton('ok-btn');
 		$okBtn->text = $this->getText('Save');
-		$okBtn->action('content.update', 'content.content,'.$this->rowid.',#content-text');
+		$okBtn->action('content.update', 'content.content', $this->rowid, '#content-text');
 		$okBtn->message = $this->getText('Saved');
 		$editPage->addChild($okBtn);
 		

@@ -1,8 +1,8 @@
 <?php
-namespace app\engine;
-class Controller{
+// namespace app\engine;
+class app_engine_Controller{
 
-	protected $registry;
+	protected $reg;
 	public $model; // Model of this Module
 	public $name; // Module Name
 	
@@ -10,17 +10,22 @@ class Controller{
 	
 	//
 	// Constructor
-	public function __construct($registry){
-		$this->registry = $registry;				
-		$module = lcfirst(str_replace('Controller','',
-			str_replace('app\\module\\','',get_class($this))));
-		$this->name = $module;
+	public function __construct($reg){
+		$this->reg = $reg;				
+		
+		$moduleName = str_replace('Controller', '', str_replace($this->reg->ns['module'], '', get_class($this)));
+		$moduleName[0] = strtolower($moduleName[0]);
+		$this->name = $moduleName;
+		
 		//Load the Model
-		$modelFile = $this->config->moduleDir. $module . '/model.php';
-		$modelClass = '\\app\\module\\' . ucfirst($module) . 'Model';
+		$modelFile = $this->config->moduleDir. $moduleName . '/model.php';
+		$modelClass = $moduleName . 'Model'; // moduleModel
+		$modelClass[0] = strtoupper($modelClass[0]); // ModuleModel
+		$modelClass = $this->reg->ns['module'] . $modelClass; // app_module_ModuleModel
+		
 		if(!class_exists($modelClass) && file_exists($modelFile)){
 			require_once $modelFile;
-			$this->model = new $modelClass($registry);
+			$this->model = new $modelClass($reg);
 		}
 		if($this->config->isAdmin){
 			$this->updateDB();	
@@ -78,7 +83,7 @@ class Controller{
 	//
 	// Get objects from Registry
 	public function __get($name){
-		return $this->registry->$name;
+		return $this->reg->$name;
 	}
 	
 	// Update Sort Order of the table with the ids provided,
@@ -122,7 +127,7 @@ class Controller{
 		$id = (int)$this->db->escape($id);
 		
 		// Update
-		$table = preg_replace('#\.[a-zA-Z]+$#', '', $field);
+		$table = preg_replace('#\.[a-zA-Z-_0-9]+$#', '', $field);
 		$result= $this->model->query("
 			SELECT [{$field}] AS [f]
 			FROM [{$table}]
@@ -137,10 +142,9 @@ class Controller{
 	
 	// Update Individual Fields
 	public function update($field, $id, $val){
-		
 		// Validate
 		if(!$this->model->field($field)->validate($val)){
-			$this->error = 'Update Error';
+			$this->error = 'Error While Validating Field';
 			return false;
 		}
 		
@@ -155,7 +159,7 @@ class Controller{
 			UPDATE [{$table}]
 			SET [{$field}] = '{$val}'
 			WHERE [{$table}.id] = {$id}
-		");		
+		");
 		
 		if(false===$result){
 			$this->error = $this->db->lastError();
@@ -165,6 +169,13 @@ class Controller{
 		return true;	
 	}
 	
-	
+	public function reverseArray($array){
+		$newArr = array();
+		for($i=count($array)-1;$i>=0;$i--){
+			$newArr[] = $array[$i];
+		}
+		$array = $newArr;
+		return $array;
+	}
 }
 ?>

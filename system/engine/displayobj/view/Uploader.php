@@ -31,7 +31,6 @@ $(function(){
 					if(d.status=="ok"){
 						<? if($action!=''): ?>
 						var imageId = d.data;
-						alert(d.data);
 						var params = <?=$actionParams?>;
 						params.unshift(d.data); // add image id to the params
 						$.ajax({
@@ -40,7 +39,7 @@ $(function(){
 							"async":true,
 							"cache":false,
 							"data":{
-								"params":<?=$actionParams?>
+								"params":params
 							},
 							"success":function(d){
 								lt.html("");

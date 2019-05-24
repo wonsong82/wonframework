@@ -1,6 +1,6 @@
 <?php
-namespace app\engine\displayobj;
-class Uploader extends DisplayObject{
+// namespace app\engine\displayobj;
+class app_engine_displayobj_Uploader extends app_engine_displayobj_DisplayObject{
 	
 	public $type = '*.*'; // File is default, you can set image,
 	public $imgWidth = 800; // If type is image

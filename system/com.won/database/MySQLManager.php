@@ -1,10 +1,10 @@
 <?php
-namespace com\won\database;
-final class MySQLManager{
+// namespace com\won\database;
+final class com_won_database_MySQLManager{
 	
 	private $sql;
 	
-	public function __construct(MySQL $mySQL){
+	public function __construct($mySQL){
 		$this->sql = $mySQL;
 	}
 	

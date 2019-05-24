@@ -1,13 +1,20 @@
 <?php
-// Install
+// Redirect to Install If the APP isnt properly installed
 if (!file_exists(dirname(__FILE__).'/config.php')) {
 	header('location:install');
 	exit();
 }
+
+
 // Load Engines
 foreach (glob(dirname(__FILE__).'/system/engine/*.php') as $engine) {
 	require_once $engine;
 }
+
+// Namespaces
+require_once dirname(__FILE__).'/namespaces.php';
+
+
 // Load DataTypes, Must load in sequential order for extensions
 require_once dirname(__FILE__).'/system/engine/datatype/Table.php';
 require_once dirname(__FILE__).'/system/engine/datatype/DataType.php';
@@ -19,13 +26,22 @@ require_once dirname(__FILE__).'/system/engine/datatype/Pkey.php';
 
 
 // Start the Registry
-$reg = new app\engine\Registry();
+$reg = new app_engine_Registry($ns);
 
 // Load Config
 require_once dirname(__FILE__).'/config.php';
 
 $reg->loader->getClass('server.MagicQuotesFix'); // Run Fixes
 $reg->loader->getClass('server.RegisterGlobalsFix');
+
+$reg->lang->langs = array(
+		'en' => 'english',
+		'ko' => '한글',		
+		'cn' => '中國語',
+		'jp' => '日本語'
+);
+$reg->lang->defaultLang = 'en';
+
 
 // Start the Session
 $reg->session->start(); 
@@ -52,5 +68,5 @@ if(!$reg->lang->isDefault){
 // Check if its admin page
 $reg->config->isAdmin = preg_match('#'.$reg->config->adminUri.'#i', $reg->req->server['REQUEST_URI']);
 $reg->config->isAjax = preg_match('#ajax/#', $reg->req->server['REQUEST_URI']);
-		
+
 ?>

@@ -1,6 +1,8 @@
 <?php
-namespace com\won\auth;
-class Code {
+//namespace com\won\auth;
+class com_won_auth_Code {
+	
+	public function __construct(){}
 	
 	public function encrypt($string) {
 		

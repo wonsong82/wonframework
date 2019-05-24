@@ -1,8 +1,12 @@
 <?php
-namespace app\engine;
-final class Session {
+// namespace app\engine;
+final class app_engine_Session {
 	
-	public $data = array();
+	public $data; // Session Data
+	
+	public function __construct($reg){
+		$this->data = array();
+	}
 	
 	public function start() {
 		if (!session_id()) {

@@ -1,13 +1,14 @@
 <?php
 // Name : User Model
 // Desc : Controlls User Authentication and Roles
-namespace app\module;
-final class UserModel extends \app\engine\Model{
+
+// namespace app\module;
+final class app_module_UserModel extends app_engine_Model{
 	
 	//
 	// DB Structure
-	public function __construct($registry){
-		parent::__construct($registry);
+	public function __construct($reg){
+		parent::__construct($reg);
 		
 		//user.username
 		$field = $this->table('user')->field('username', 'text');

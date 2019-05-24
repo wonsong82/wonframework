@@ -1,13 +1,13 @@
 <?php
-namespace com\won\database;
-final class SQLite{
+// namespace com\won\database;
+final class com_won_database_SQLite{
 	
 	public $result;
 	private $link;
 	
 	public function __construct($db){
 		if(is_file($db)) chmod($db, 0777);		
-		$this->link = new \SQLite3($db);		
+		$this->link = new SQLite3($db);		
 	}
 	
 	

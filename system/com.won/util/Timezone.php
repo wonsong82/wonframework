@@ -1,6 +1,6 @@
 <?php
-namespace com\won\util;
-class Timezone {
+// namespace com\won\util;
+class com_won_util_Timezone {
 	
 	private $zones = array(
 		'Pacific/Midway'    => "(GMT-11:00) Midway Island",
@@ -117,6 +117,8 @@ class Timezone {
 		'Pacific/Fiji'      => "(GMT+12:00) Fiji",
 		'Asia/Kamchatka'    => "(GMT+12:00) Kamchatka"
 	);
+		
+	public function __construct(){}
 		
 	public function getTimezones(){
 		return $this->zones;

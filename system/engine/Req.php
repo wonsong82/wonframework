@@ -1,6 +1,6 @@
 <?php
-namespace app\engine;
-final class Req{
+// namespace app\engine;
+final class app_engine_Req{
 	public $get=array();
 	public $post=array();
 	public $cookie=array();

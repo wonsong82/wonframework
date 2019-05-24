@@ -1,6 +1,6 @@
 <?php
-namespace app\engine\displayobj;
-class Select extends DisplayObject{
+// namespace app\engine\displayobj;
+class app_engine_displayobj_Select extends app_engine_displayobj_DisplayObject{
 	
 	public $value = array();	
 	public $selected = 0;

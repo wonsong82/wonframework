@@ -25,8 +25,11 @@ $this->admin->addMenu('home', 'Home', 'Administrator');
 $this->admin->addMenu('user', 'Users', 'Administrator');
 $this->admin->addMenu('url', 'URIs', 'Administrator');
 $this->admin->addMenu('content', 'Contents', 'Administrator');
-$this->admin->addMenu('image', 'Images', 'Administrator');
+$this->admin->addMenu('gallery', 'Gallery', 'Administrator');
+$this->admin->addMenu('event', 'Events', 'Administrator');
+//$this->admin->addMenu('image', 'Images', 'Administrator');
 $this->admin->addMenu('mail', 'Mail', 'Administrator');
+$this->admin->addMenu('store', 'Store', 'Administrator');
 
 // Parse current Page
 $this->admin->parseMenu();
@@ -35,6 +38,4 @@ $this->admin->parseMenu();
 include $this->config->adminDir. 'template/header.php';
 include $this->config->adminDir. 'template/body.php';
 include $this->config->adminDir. 'template/footer.php';
-
-
 ?>

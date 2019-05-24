@@ -6,10 +6,17 @@ foreach($reg->url->args as $k=>$v)
 <h1><?=$text?></h1>
 <div id="<?=$id?>" class="page"<?=$args?>>
 	<div class="load"></div>
-	<? if($desc):?>
+    <? if($desc):?>
 	<p class="desc"><?=$desc?></p>
     <? endif;?>
+	
+    <div class="msg"></div>
+	
+    
 	<? foreach($childs as $c){
-			$c->render();
+			if(gettype($c)=='string')
+				echo $c;
+			else
+				$c->render();
 	}?>
 </div>

@@ -1,8 +1,8 @@
 <?php
 // Name : Image Model
 // Desc : Handles all the images within the site
-namespace app\module;
-final class ImageModel extends \app\engine\Model{
+// namespace app\module;
+final class app_module_ImageModel extends app_engine_Model{
 	
 	//
 	// DB Structure

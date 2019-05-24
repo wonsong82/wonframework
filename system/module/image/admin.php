@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-class ImageAdmin extends \app\engine\AdminView{
+// namespace app\module;
+class app_module_ImageAdmin extends app_engine_AdminView{
 	
 	public function construct(){
 		
@@ -11,8 +11,10 @@ class ImageAdmin extends \app\engine\AdminView{
 		$addBtn = $this->newUploader('add-image-btn');
 		$addBtn->text = $this->getText('Add Image');
 		$addBtn->type = 'image';
-		$addBtn->imgWidth = 800;
-		$addBtn->imgHeight = 400;
+		$addBtn->imgWidth = 900;
+		$addBtn->imgHeight = 600;
+		$addBtn->thumbWidth = 50;
+		$addBtn->thumbHeight = 50;
 		$addBtn->redirect('image.images-page');
 		$page->addChild($addBtn);
 		

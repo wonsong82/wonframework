@@ -1,8 +1,9 @@
 <?php
 // Name : DisplayObject
 // Desc : Controls Default Views of Elements
-namespace app\engine\displayobj;
-class DisplayObject{
+
+// namespace app\engine\displayobj;
+class app_engine_displayobj_DisplayObject{
 	
 	public $id;// ID of this Object, Usually Name
 	public $text;// Text, Usually Display Text for this control
@@ -29,12 +30,13 @@ class DisplayObject{
 	// Constructor
 	public function __construct($id, $reg){
 		$this->id = $id;
-		$this->text = $id;
+		$this->text = '';
 		$this->reg = $reg;
 		$this->desc = '';
 		$this->childs = array();
-		$this->className = str_replace('app\\engine\\displayobj\\','',get_class($this));
-		$this->action=$this->actionArgs=$this->redirect=$this->redirectArgs='';
+		$this->className = str_replace($this->reg->ns['displayobj'], '', get_class($this));
+		$this->action=$this->actionArgs=$this->redirect=$this->redirectArgs='';	
+		
 	}
 	
 	
@@ -68,7 +70,7 @@ class DisplayObject{
 		$value = $this->value;
 		
 		$reg = $this->reg;
-		$childs = $this->childs;;
+		$childs = $this->childs;
 		$parent = $this->parent;
 		
 		$css = $this->css;	
@@ -87,13 +89,14 @@ class DisplayObject{
 	//
 	// AddChild
 	public function addChild($displayObj){
-		$displayObj->parent = $this;
+		if(gettype($displayObj)!='string') // for Html Tags
+			$displayObj->parent = $this;
 		$this->childs[] = $displayObj;
 	}
 	
 	//
 	// Set Action
-	public function action($action, $args=''){
+	public function action($action){
 		$action=explode('.',$action);
 		foreach($action as &$actionRow) trim($actionRow);
 		if(count($action)<2){
@@ -101,15 +104,18 @@ class DisplayObject{
 			return false;
 		}
 		$this->action = $action;
+		
+		$args = func_get_args();
+		array_splice($args, 0, 1);
+		
 		$this->actionArgs = $args;
 	}
 	
 	//
 	// Get Action Params
 	protected function actionParams(){
-		$params=$this->actionArgs;
-		if($params!=''){
-			$params=explode(',',$params);
+		$params = $this->actionArgs;
+		if(count($params)){
 			$parr=array();
 			foreach($params as $p){
 				$p=trim($p);
@@ -133,12 +139,12 @@ class DisplayObject{
 		else{
 			$params='[]';
 		}
-		return $params;
+		return $params;		
 	}
 	
 	//
 	// Set Redirect
-	public function redirect($pagePath, $args=''){
+	public function redirect($pagePath){
 		$path=explode('.',$pagePath);
 		foreach($path as &$pathRow) trim($pathRow);
 		if(count($path)<2){
@@ -146,14 +152,16 @@ class DisplayObject{
 			return false;
 		}
 		$this->redirect = $this->reg->config->admin.$path[0].'/page='.$path[1];
+		
+		$args = func_get_args();
+		array_splice($args, 0, 1);
 		$this->redirectArgs = $args;
 	}
 	
 	// Get Redirect Params
 	protected function redirectParams(){
 		$params=$this->redirectArgs;
-		if($params!=''){
-			$params=explode(',',$params);
+		if(count($params)){
 			$parr=array();
 			foreach($params as $p){
 				$p=trim($p);
@@ -172,6 +180,9 @@ class DisplayObject{
 				}
 			}
 			$params='+"&"+'.implode('+"&"+',$parr);				
+		}
+		else{
+			$params='';
 		}
 		return $params;
 	}

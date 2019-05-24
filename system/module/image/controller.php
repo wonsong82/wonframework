@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-final class ImageController extends \app\engine\Controller{
+// namespace app\module;
+final class app_module_ImageController extends app_engine_Controller{
 	
 	private $imgUri = 'images/';
 	private $imgUrl;

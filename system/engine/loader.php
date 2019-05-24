@@ -1,44 +1,39 @@
 <?php
 // Name : Loader
 // Desc : Loads Internal & External Assets into the App
-namespace app\engine;
-final class Loader{
-	
-	private $registry;
-	private $engineNS	= '\\app\\engine\\';
-	private $moduleNS	= '\\app\module\\';
-	private $packageNS	= '\\com\\won\\'; 
+// namespace app\engine;
+
+final class app_engine_Loader{
+
+	private $reg;
 	private $css = array();
 	private $js = array();
-	
+
 	//
 	// Entry, register Registry
-	//
-	public function __construct($registry){
-		$this->registry = $registry;
+	public function __construct($reg){
+		$this->reg = $reg;
 	}
-		
+	
 	//
 	// The engines should be preincluded, 
 	// returns new instance of the engine, otherwise false 
-	//	
 	public function getEngine($engineName){
-		$engineClass = $this->engineNS . ucwords($engineName);
+		$engineClass = $this->reg->ns['engine'] . $this->uf($engineName);
 		return class_exists($engineClass)?
-			new $engineClass($this->registry) : false;	
+			new $engineClass($this->reg) : false;	
 	}
-	
-	
+
 	//
 	// Returns a new instance of the Module Controller,
 	// Otherwise return false
-	//
 	public function getModule($moduleName){
-		$moduleControllerFile = $this->registry->config->moduleDir . $moduleName . '/controller.php';
-		$moduleControllerClass = $this->moduleNS . ucwords($moduleName) . 'Controller';
+		$moduleControllerFile = $this->reg->config->moduleDir . $moduleName . '/controller.php';
+		$moduleControllerClass = $this->reg->ns['module'] . $this->uf($moduleName) . 'Controller';
 		if (file_exists($moduleControllerFile)) {
 			require_once $moduleControllerFile;
-			return new $moduleControllerClass($this->registry);
+			return class_exists($moduleControllerClass)?
+				new $moduleControllerClass($this->reg) : false;
 		}
 		else
 			return false;
@@ -48,15 +43,18 @@ final class Loader{
 	// Import and return a new instance of External Class within com.won Package
 	// Pass args after packagePath if theres any
 	// Multiple instance of this is allowed
-	//
 	public function getClass($packagePath, $args=null){
-		$classFile = $this->registry->config->packageDir . str_replace('.','/',$packagePath) . '.php';
-		$class = $this->packageNS . str_replace('.', '\\', $packagePath);
-		if(!class_exists($class)) require $classFile;
-		$refClass = new \ReflectionClass($class);
-		return $refClass->newInstanceArgs(array_splice(func_get_args(),1));
+		$classFile = $this->reg->config->packageDir . str_replace('.','/',$packagePath) . '.php';
+		$classClass = $this->reg->ns['package'] . str_replace('.', $this->reg->ns['SEPARATOR'], $packagePath);
+		if(!class_exists($classClass)) 
+			require $classFile;
+		$refClass = $this->reg->ns['base'] . 'ReflectionClass';
+		$refClass = new $refClass($classClass);
+		$arg = func_get_args();
+		$arg = array_splice($arg, 1);
+		return $refClass->newInstanceArgs($arg);
 	}
-	
+
 	//
 	// Add the Library 
 	// Add the Library composed with JS, CSS, and its Requirements
@@ -66,8 +64,8 @@ final class Loader{
 		$css=array();
 		$js=array();
 		$data='';
-		$info=$this->registry->config->libraryDir . str_replace('.','/',$path).'/info.php';
-		$path=$this->registry->config->library . str_replace('.','/',$path);
+		$info=$this->reg->config->libraryDir . str_replace('.','/',$path).'/info.php';
+		$path=$this->reg->config->library . str_replace('.','/',$path);
 		
 		if(!file_exists($info)){
 			trigger_error("cannot locate info file from ".$path);
@@ -94,6 +92,19 @@ final class Loader{
 		return $data;
 	}	
 	
+
+	private function lf($string){
+		$string[0] = strtolower($string[0]);
+		return $string;
+	}
 	
+
+	private function uf($string){
+		$string[0] = strtoupper($string[0]);
+		return $string;
+	}
+
+	
+
 }
 ?>

@@ -28,7 +28,7 @@ require SYSTEM_DIR . 'com.won/util/Timezone.php';
 require SYSTEM_DIR . 'com.won/database/MySQL.php';
 
 // Validate Requirements
-$checker = new \com\won\server\ServerInfo();
+$checker = new com_won_server_ServerInfo();
 $check['PHP Verson'] = $checker->checkPHPVersion();
 $check['MySQL Version'] = $checker->checkMySQLVersion();
 $check['Apache Requirements'] = $checker->checkApache();
@@ -105,13 +105,13 @@ foreach($site as &$siteField){
 }
 
 // TImezone
-$timezones = new \com\won\util\Timezone();
+$timezones = new com_won_util_Timezone();
 $timezones = $timezones->getTImeZones();
 $timezone = isset($_POST['timezone'])?$_POST['timezone']:'US/Eastern';
 
 if($checkPassed&&$dbPassed&&$dbhandlerPassed&&$sitePassed){
 
-$phpass = new \com\won\auth\PHPass();
+$phpass = new com_won_auth_PHPass();
 
 $bits['site_url'] = $site['url']['val'];
 $bits['content_url'] = $site['url']['val'] . 'website/';
@@ -190,7 +190,8 @@ require_once SITE_DIR .'system/engine/datatype/Time.php';
 require_once SITE_DIR .'system/engine/datatype/Bool.php';
 require_once SITE_DIR .'system/engine/datatype/Pkey.php';
 
-$reg=new \app\engine\Registry();
+require_once dirname(dirname(__FILE__)).'/namespaces.php';
+$reg=new app_engine_Registry($ns);
 require_once SITE_DIR . 'config.php';
 $reg->loader->getClass('server.MagicQuotesFix'); // Run Fixes
 $reg->loader->getClass('server.RegisterGlobalsFix');

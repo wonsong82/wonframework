@@ -1,18 +1,18 @@
 <?php
-namespace app\engine;
-final class Lang{
+// namespace app\engine;
+final class app_engine_Lang{
 	
-	public $defaultLang = 'en';
+	public $defaultLang;
 	public $lang;
 	public $langText;
 	public $isDefault;
+		
+	public $langs;
 	
-	public $langs=array(
-		'en' => 'english',
-		'ko' => '한글',		
-		'cn' => '中國語',
-		'jp' => '日本語'
-	);
+	public function __construct(){
+		$this->langs = array('en'=>'english');
+		$this->defaultLang = 'en';		
+	}
 	
 	public function set($lang){
 		$this->lang = isset($this->langs[$lang])? $lang:$this->defaultLang;

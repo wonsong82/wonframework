@@ -1,6 +1,6 @@
 <?php
-namespace app\engine\displayobj;
-class CheckBox extends DisplayObject{
+// namespace app\engine\displayobj;
+class app_engine_displayobj_CheckBox extends app_engine_displayobj_DisplayObject{
 	
 	public $value = false; // @override the default
 	

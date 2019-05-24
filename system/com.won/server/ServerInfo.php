@@ -1,8 +1,12 @@
 <?php
 // Server information
-namespace com\won\server;
-class ServerInfo
+
+// namespace com\won\server;
+class com_won_server_ServerInfo
 {
+	
+	public function __construct(){}
+	
 	// phpinfo
 	public function info()
 	{
@@ -103,7 +107,14 @@ class ServerInfo
 		
 		foreach ($list as $mod_name => $mod_key)
 		{
-			$mod_on = in_array($mod_key, apache_get_modules())? true : false;
+			//$mod_on = in_array($mod_key, apache_get_modules())? true : false;
+			
+			if(function_exists('apache_get_modules')){
+				$mod_on = in_array($mod_key, apache_get_modules())? true : false;
+			} else {			
+				// Manually Bypass it	
+				$mod_on = true;
+			}
 						
 			if (!$mod_on)
 				$no_error = false;

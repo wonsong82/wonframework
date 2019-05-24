@@ -1,6 +1,6 @@
 <?php
-namespace app\module;
-final class MailController extends \app\engine\Controller{
+// namespace app\module;
+final class app_module_MailController extends app_engine_Controller{
 	
 	public $sender; // PhpMailerObj;
 		

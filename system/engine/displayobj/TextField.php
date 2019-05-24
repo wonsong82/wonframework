@@ -1,6 +1,6 @@
 <?php
-namespace app\engine\displayobj;
-class TextField extends DisplayObject{
+// namespace app\engine\displayobj;
+class app_engine_displayobj_TextField extends app_engine_displayobj_DisplayObject{
 		
 	public $password = false; // Is Password (bool)
 	public $static = false; // Is Statuc TextField (label)
@@ -9,6 +9,7 @@ class TextField extends DisplayObject{
 	// Constructor
 	public function __construct($id,$reg){
 		parent::__construct($id,$reg);
+		$this->text = '';
 		$this->value='';
 	}
 	

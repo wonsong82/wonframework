@@ -1,6 +1,6 @@
 <?php
-namespace com\won\server;
-final class MagicQuotesFix {
+// namespace com\won\server;
+final class com_won_server_MagicQuotesFix {
 	
 	public function __construct() {
 		if (ini_get('magic_quotes_gpc')) {

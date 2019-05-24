@@ -1,6 +1,8 @@
 <?php
-namespace app\engine;
-class AdminView{
+// Interface
+
+// namespace app\engine;
+class app_engine_AdminView{
 	
 	protected $reg;
 	protected $name;
@@ -13,11 +15,13 @@ class AdminView{
 	protected $pageObj=null;
 	protected $rowid=0;
 	
-	public function __construct($registry){
-		$this->reg = $registry; // Registry
+	public function __construct($reg){
+		$this->reg = $reg; // Registry
+		
 		//Get this module name
-		$module = lcfirst(str_replace('Admin','',
-			str_replace('app\\module\\','',get_class($this))));
+		$module = str_replace('Admin','', str_replace($this->reg->ns['module'], '', get_class($this)));
+		$module[0] = strtolower($module[0]);
+		
 		$this->name = $module;
 		$this->controller = $this->$module;
 		$this->model = $this->$module->model;
@@ -80,7 +84,7 @@ class AdminView{
 	}
 	
 	
-	protected function addPage(\app\engine\displayobj\Page $page,$display=true){
+	protected function addPage($page,$display=true){
 		$page->parent = $this;
 		$this->pages[] = array('page'=>$page,'display'=>$display);
 	}	
@@ -91,45 +95,17 @@ class AdminView{
 	// For Display Objects
 	public function __call($func, $args){
 		if(strpos('new', $func)==0){
-			$ns = '\\app\\engine\\displayobj\\';
 			$class = str_replace('new','',$func);
+			
 			$id = $args[0];
 			require_once $this->config->siteDir . 'system/engine/displayobj/DisplayObject.php';
 			require_once $this->config->siteDir . 'system/engine/displayobj/'.$class.'.php';
-			$class = $ns.$class;
+			
+			$class = $this->reg->ns['displayobj'] .$class;
 			return new $class($id, $this->reg);
 		}	
 	}
-	/*
-	public function __call($func, $args) {
-		return call_user_func_array(array($this->dbObj, $func), $args);
-	}
 	
-		
-	protected function newButton($id){
-		require_once $this->config->siteDir.'system/engine/displayobj/Button.php';
-		return new \app\engine\displayobj\Button($id, $this->reg);
-	}	
-	protected function newTable($id){
-		require_once $this->config->siteDir.'system/engine/displayobj/Table.php';
-		return new \app\engine\displayobj\Table($id, $this->reg);
-	}
-	protected function newTextField($id){
-		require_once $this->config->siteDir.'system/engine/displayobj/TextField.php';
-		return new \app\engine\displayobj\TextField($id, $this->reg);
-	}
-	protected function newCheckBox($id){
-		require_once $this->config->siteDir.'system/engine/displayobj/CheckBox.php';
-		return new \app\engine\displayobj\CheckBox($id, $this->reg);
-	}
-	protected function newText($id){
-		require_once $this->config->siteDir.'system/engine/displayobj/Text.php';
-		return new \app\engine\displayobj\Text($id, $this->reg);
-	}
-	protected function newUploader($id){
-		require_once $this->config->siteDir.'system/engine/displayobj/Uploader.php';
-		return new \app\engine\displayobj\Uploader($id, $this->reg);
-	}*/
 	
 }
 ?>

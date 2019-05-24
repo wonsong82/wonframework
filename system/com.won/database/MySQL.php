@@ -1,6 +1,6 @@
 <?php
-namespace com\won\database;
-final class MySQL {
+//namespace com\won\database;
+final class com_won_database_MySQL {
 	
 	public $result;
 	public $lastError;
@@ -12,7 +12,9 @@ final class MySQL {
 	public function connect($host, $user, $pass, $db){
 		$this->link = @mysql_connect($host,$user,$pass);
 		$this->selectDb($db);
-		$this->setCharset('utf8');//Set Default Charset to UTF8 until specified later time		
+		if(function_exists('mysql_set_charset')){
+			$this->setCharset('utf8');//Set Default Charset to UTF8 until specified later time		
+		}
 		return $this->link? true:false;
 	}
 	

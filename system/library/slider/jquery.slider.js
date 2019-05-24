@@ -6,7 +6,7 @@ ex:) $('#banner').slider();
 */
 (function($){
 	
-$.fn.slider=function(){
+$.fn.bannerslider=function(){
 	
 	
 	// Error checking	

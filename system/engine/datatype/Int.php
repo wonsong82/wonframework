@@ -1,6 +1,6 @@
 <?php
-namespace app\engine\datatype;
-class Int extends Datatype{
+// namespace app\engine\datatype;
+class app_engine_datatype_Int extends app_engine_datatype_Datatype{
 	
 	protected $max;
 	protected $unsigned;
@@ -12,8 +12,8 @@ class Int extends Datatype{
 		'BIGINT' => 5
 	);
 	
-	public function __construct($name, $registry){
-		parent::__construct($name, $registry);
+	public function __construct($name, $reg){
+		parent::__construct($name, $reg);
 		$this->sqlType = 'INT';
 		$this->regex = '#^[0-9]+$#';
 		$this->max = 2147483647;
