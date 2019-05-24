@@ -16,10 +16,9 @@ require '../includes/Server.php';
 $server = new Server();
 $php_version = $server->check_php_version();
 $mysql_version = $server->check_mysql_version();
-$apache_check = $server->check_apache();
 $php_check = $server->check_php();
 
-$enabled = $php_version['status'] && $php_check['status'] && $mysql_version['status'] && $apache_check['status']? true : false;
+$enabled = $php_version['status'] && $php_check['status'] && $mysql_version['status'] ? true : false;
 $disabled_tag = $enabled? '' : ' class="disabled"';	
 ?>
 
@@ -60,24 +59,6 @@ $disabled_tag = $enabled? '' : ' class="disabled"';
     <?php } ?>        
 </table>
 
-   
-<table id="apache-check">    	
-    <thead>
-        <td colspan="2" align="center">Apache Modules</td>
-    </thead>
-    
-    <?php foreach ($apache_check['data'] as $module) { ?>
-    <tr>
-        <td width="200"><?=$module['name']?></td>
-        <td><?=$module['status']? '<h1>Ok</h1>' : '<h3 class="error">X</h3>'?></td>            
-    </tr>
-    
-    <?php if (!$module['status']) { ?>
-    <tr>
-        <td colspan="2" class="alert-noicon">└ <?=$module['error_msg']?></td>
-    </tr>
-    <?php } }?>        
-</table>
 
 <table id="php-check">    	
     <thead>

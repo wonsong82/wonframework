@@ -44,7 +44,7 @@ class User
 			return false;
 		}
 		
-		if (!preg_match(
+		
 		
 		
 		

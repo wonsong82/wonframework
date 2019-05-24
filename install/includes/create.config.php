@@ -16,7 +16,8 @@ $admin_pass = md5(trim($_POST['admin_pass']));
 
 
 // get config content
-$config = file_get_contents('config.template.php');
+include 'config.template.php';
+$config = $config_tpl;
 $config = str_replace('{$db_host}', $db_host, $config);
 $config = str_replace('{$db_user}', $db_user, $config);
 $config = str_replace('{$db_pass}', $db_pass, $config);
@@ -53,7 +54,8 @@ else
 	$base = '/';
 
 // get htaccess content
-$htaccess = file_get_contents('htaccess.template.php');
+include 'htaccess.template.php';
+$htaccess = $htaccess_tpl;
 $htaccess = str_replace('{$base}', $base , $htaccess);
 
 // create file

@@ -1,4 +1,6 @@
 ﻿<?php
+$config_tpl = <<<CON
+<?php
 /*** 
 /* Program : Webwon Config
 /* Author : Won Song
@@ -32,6 +34,9 @@ define('MODULE_DIR', SITE_DIR . '/modules');
 define('CONTENT_URL',  SITE_URL . '/contents');
 define('CONTENT_DIR', SITE_DIR . '/contents');
 
+// Content Includes DIR
+define('INCLUDE_DIR', CONTENT_DIR . '/includes');
+
 // Admin URL & DIR
 define('ADMIN_URL', SITE_URL . '/admin');
 define('ADMIN_DIR', SITE_DIR . '/admin');
@@ -41,21 +46,23 @@ Sql::connect('{$db_host}', '{$db_user}', '{$db_pass}', '{$db_db}');
 Sql::prefix('{$db_prefix}');
 
 // Auto-load modules
-function __autoload($class_name)
+function __autoload(\$class_name)
 {
-	$class_file =  MODULE_DIR . '/' . $class_name . '/' . $class_name . '.php';
+	\$class_file =  MODULE_DIR . '/' . \$class_name . '/' . \$class_name . '.php';
 	
-	if (file_exists($class_file))
+	if (file_exists(\$class_file))
 	{	
-		require_once $class_file;
+		require_once \$class_file;
 	}
 	
 	else
 	{
-		echo $class_name . ' module is missing.';
+		echo \$class_name . ' module is missing.';
 		exit();
 	}
 }
 
 define('CONFIG_LOADED',1);
+?>
+CON;
 ?>

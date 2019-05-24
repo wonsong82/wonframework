@@ -8,18 +8,23 @@
 
 
 // Redirect to install for the first time
-file_exists('./config.php') || header('location:install');
+if (!file_exists('./config.php')) 
+{
+	header('location:install');
+	exit();
+}
 
 // Load config
 require './config.php';
 $page = new Permalink();
 
 // if function exists, load functions
-$includes = opendir(CONTENT_DIR . '/includes');
+is_dir(INCLUDE_DIR) || mkdir(INCLUDE_DIR);
+$includes = opendir(INCLUDE_DIR);
 while (false !== ($file = readdir($includes)))
 {
 	if (preg_match('#\.php$#', $file))
-		require CONTENT_DIR . '/includes/' . $file;
+		require INCLUDE_DIR . '/' . $file;
 }
 
 require CONTENT_DIR . '/' . $page->template;
